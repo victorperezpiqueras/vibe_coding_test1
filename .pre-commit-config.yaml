@@ -29,17 +29,20 @@ repos:
         args: ["--fix=lf"]
 
   # JavaScript/TypeScript linting with ESLint
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.39.1
+  - repo: local
     hooks:
       - id: eslint
+        name: eslint (frontend)
+        language: node
+        entry: eslint
+        args: ["--config", "frontend/eslint.config.js", "--max-warnings=0"]
         files: ^frontend/.*\.(js|jsx)$
-        types: [javascript]
         additional_dependencies:
-          - "@eslint/js"
-          - "globals"
-          - "eslint-plugin-react-hooks"
-          - "eslint-plugin-react-refresh"
+          - "eslint@9.39.1"
+          - "@eslint/js@9.39.1"
+          - "globals@16.5.0"
+          - "eslint-plugin-react-hooks@7.0.1"
+          - "eslint-plugin-react-refresh@0.4.24"
 
 ci:
   autofix_commit_msg: |

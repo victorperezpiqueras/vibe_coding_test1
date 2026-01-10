@@ -1,15 +1,25 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useMemo, useState } from 'react'
 
 const API_URL = 'http://localhost:8000'
+const STORAGE_KEY = 'taskStatusMap'
+const COLUMNS = [
+  { key: 'todo', title: 'To Do' },
+  { key: 'inprogress', title: 'In Progress' },
+  { key: 'done', title: 'Done' },
+]
 
 function App() {
-  const [count, setCount] = useState(0)
   const [items, setItems] = useState([])
   const [newItemName, setNewItemName] = useState('')
   const [apiStatus, setApiStatus] = useState('checking...')
+  const [statusMap, setStatusMap] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY)
+      return raw ? JSON.parse(raw) : {}
+    } catch {
+      return {}
+    }
+  })
 
   // Check API health on mount
   useEffect(() => {
@@ -62,81 +72,138 @@ function App() {
       await fetch(`${API_URL}/items/${itemId}`, {
         method: 'DELETE'
       })
+      setStatusMap(prev => {
+        const next = { ...prev }
+        delete next[itemId]
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+        return next
+      })
       fetchItems()
     } catch (error) {
       console.error('Error deleting item:', error)
     }
   }
 
+  // Persist status map
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(statusMap))
+    } catch (e) {
+      // ignore persistence errors in localStorage
+      // ensure block is non-empty to satisfy linting
+      void e
+    }
+  }, [statusMap])
+
+  // Derived columns
+  const columnsData = useMemo(() => {
+    const byCol = {
+      todo: [],
+      inprogress: [],
+      done: [],
+    }
+    for (const item of items) {
+      const status = statusMap[item.id] || 'todo'
+      byCol[status]?.push(item)
+    }
+    return byCol
+  }, [items, statusMap])
+
+  // Drag & drop handlers
+  const onDragStart = (e, item) => {
+    e.dataTransfer.setData('text/plain', String(item.id))
+  }
+
+  const onDrop = (e, columnKey) => {
+    const idStr = e.dataTransfer.getData('text/plain')
+    if (!idStr) return
+    const id = Number(idStr)
+    setStatusMap(prev => ({ ...prev, [id]: columnKey }))
+  }
+
+  const allowDrop = (e) => e.preventDefault()
+
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React + FastAPI</h1>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur">
+        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-semibold text-slate-800">Task Board</h1>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-500">API: <span className={apiStatus === 'ok' ? 'text-emerald-600' : 'text-rose-600'}>{apiStatus}</span></span>
+            <button onClick={fetchItems} className="rounded-md bg-slate-900 text-white px-3 py-1.5 text-sm hover:bg-slate-700">Sync</button>
+          </div>
+        </div>
+      </header>
 
-      <div className="card">
-        <p>API Status: <strong>{apiStatus}</strong></p>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-
-      <div className="card">
-        <h2>Items Management</h2>
-        <button onClick={fetchItems} style={{ marginBottom: '1rem' }}>
-          Fetch Items from API
-        </button>
-
-        <form onSubmit={createItem} style={{ marginBottom: '1rem' }}>
+      {/* Compose */}
+      <section className="mx-auto max-w-7xl w-full px-6 py-6">
+        <form onSubmit={createItem} className="flex items-center gap-3">
           <input
             type="text"
             value={newItemName}
             onChange={(e) => setNewItemName(e.target.value)}
-            placeholder="Enter item name"
-            style={{ marginRight: '0.5rem', padding: '0.5rem' }}
+            placeholder="Add a task and press Enter"
+            className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400"
           />
-          <button type="submit">Create Item</button>
+          <button type="submit" className="rounded-md bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-500">Add Task</button>
         </form>
+      </section>
 
-        <div style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto' }}>
-          {items.length === 0 ? (
-            <p>No items yet. Click "Fetch Items" or create one!</p>
-          ) : (
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {items.map(item => (
-                <li key={item.id} style={{
-                  border: '1px solid #646cff',
-                  padding: '0.5rem',
-                  marginBottom: '0.5rem',
-                  borderRadius: '4px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}>
-                  <div>
-                    <strong>{item.name}</strong>
-                    {item.description && <p style={{ margin: '0.25rem 0', fontSize: '0.9em' }}>{item.description}</p>}
-                  </div>
-                  <button onClick={() => deleteItem(item.id)} style={{ padding: '0.25rem 0.5rem' }}>
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+      {/* Board */}
+      <main className="mx-auto max-w-7xl w-full px-6 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {COLUMNS.map(col => (
+            <div key={col.key} className="rounded-xl border border-slate-200 bg-white shadow-sm">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+                <h2 className="text-sm font-semibold text-slate-700">{col.title}</h2>
+                <span className="text-xs text-slate-500">{columnsData[col.key].length}</span>
+              </div>
+              <div
+                className="p-3 space-y-3 min-h-40 max-h-[60vh] overflow-y-auto scrollbar-thin"
+                onDragOver={allowDrop}
+                onDrop={(e) => onDrop(e, col.key)}
+              >
+                {columnsData[col.key].length === 0 ? (
+                  <div className="text-xs text-slate-400 py-6 text-center">Drag tasks here</div>
+                ) : (
+                  columnsData[col.key].map(item => (
+                    <article
+                      key={item.id}
+                      className="group rounded-lg border border-slate-200 bg-white p-3 shadow-sm hover:shadow-md cursor-grab"
+                      draggable
+                      onDragStart={(e) => onDragStart(e, item)}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h3 className="text-sm font-medium text-slate-800">{item.name}</h3>
+                          {item.description && (
+                            <p className="mt-1 text-xs text-slate-500">{item.description}</p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => deleteItem(item.id)}
+                          className="opacity-0 group-hover:opacity-100 rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </article>
+                  ))
+                )}
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      </main>
 
-      <p className="read-the-docs">
-        Backend API running at <a href="http://localhost:8000/docs" target="_blank">localhost:8000/docs</a>
-      </p>
-    </>
+      {/* Footer */}
+      <footer className="mt-auto border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-4 text-xs text-slate-500">
+          Backend: <a className="underline hover:text-slate-700" href="http://localhost:8000/docs" target="_blank">localhost:8000/docs</a>
+        </div>
+      </footer>
+    </div>
   )
 }
 
