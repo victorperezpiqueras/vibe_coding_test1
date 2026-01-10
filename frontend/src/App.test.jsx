@@ -319,7 +319,6 @@ describe('App', () => {
       expect(mockFetch).toHaveBeenCalled()
     })
 
-    const initialCallCount = mockFetch.mock.calls.length
     vi.clearAllMocks()
 
     const syncButton = screen.getByRole('button', { name: /sync/i })
