@@ -59,8 +59,11 @@ function App() {
 
   // Load items and tags on mount
   useEffect(() => {
-    fetchItems()
-    fetchTags()
+    const loadData = async () => {
+      await fetchItems()
+      await fetchTags()
+    }
+    loadData()
   }, [])
 
   // Create a new item
