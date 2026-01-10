@@ -2,7 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
-from app.routers import items_router
+from app.items.infrastructure.api.item_router import router as items_router
+
+# Import ORM models to register them with Base (avoid circular imports)
+from app.items.infrastructure.orm.item_orm import ItemORM  # noqa: F401
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -10,8 +13,8 @@ Base.metadata.create_all(bind=engine)
 # Create FastAPI app
 app = FastAPI(
     title="Vibe Coding Test API",
-    description="A FastAPI backend with SQLAlchemy and SQLite",
-    version="1.0.0"
+    description="A FastAPI backend with SQLAlchemy and SQLite following Hexagonal Architecture",
+    version="1.0.0",
 )
 
 # Configure CORS for frontend communication
@@ -33,7 +36,7 @@ def read_root():
     return {
         "message": "Welcome to Vibe Coding Test API",
         "docs": "/docs",
-        "redoc": "/redoc"
+        "redoc": "/redoc",
     }
 
 

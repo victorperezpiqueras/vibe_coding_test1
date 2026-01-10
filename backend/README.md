@@ -1,14 +1,38 @@
 # Backend - FastAPI with SQLAlchemy and SQLite
 
-This is the backend service built with FastAPI, SQLAlchemy, and SQLite.
+This is the backend service built with FastAPI, SQLAlchemy, and SQLite following **Hexagonal Architecture** (Ports and Adapters pattern).
 
 ## Features
 
 - FastAPI framework for high-performance API
 - SQLAlchemy ORM with SQLite database
+- Hexagonal Architecture for clean separation of concerns
 - CRUD operations for Items
 - Automatic API documentation (Swagger UI and ReDoc)
 - CORS enabled for frontend communication
+- Dependency injection pattern for testability
+
+## Architecture
+
+This backend follows the **Hexagonal Architecture** pattern with three main layers:
+
+### Domain Layer
+
+- **Entities**: Core business models (pure business logic)
+- **Interfaces**: Repository interfaces defining contracts
+
+### Application Layer
+
+- **Use Cases**: Application-specific business rules and orchestration
+- **DTOs**: Data Transfer Objects for input/output
+
+### Infrastructure Layer
+
+- **API**: FastAPI routers and request/response models
+- **ORM**: SQLAlchemy models and database mappings
+- **Database**: Repository implementations and database connections
+
+For detailed architecture guidelines, see [.github/backend-architecture.instructions.md](../.github/backend-architecture.instructions.md)
 
 ## Setup
 
@@ -20,12 +44,14 @@ This is the backend service built with FastAPI, SQLAlchemy, and SQLite.
 ### Installation
 
 1. Create a virtual environment:
+
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 2. Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -33,11 +59,13 @@ pip install -r requirements.txt
 ### Running the Server
 
 Start the development server:
+
 ```bash
 uvicorn app.main:app --reload
 ```
 
 The API will be available at:
+
 - API: http://localhost:8000
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
@@ -49,12 +77,15 @@ The SQLite database file (`app.db`) will be created automatically in the backend
 ## API Endpoints
 
 ### Root
+
 - `GET /` - Welcome message
 
 ### Health Check
+
 - `GET /health` - Health check endpoint
 
 ### Items
+
 - `GET /items/` - Get all items (with pagination)
 - `GET /items/{item_id}` - Get a specific item
 - `POST /items/` - Create a new item
@@ -68,16 +99,45 @@ backend/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py              # FastAPI application entry point
-│   ├── schemas.py           # Pydantic models
 │   ├── database/
 │   │   ├── __init__.py
 │   │   └── database.py      # Database configuration
-│   ├── models/
-│   │   ├── __init__.py
-│   │   └── item.py          # SQLAlchemy models
-│   └── routers/
-│       ├── __init__.py
-│       └── items.py         # API routes
+│   ├── items/               # Items module (Hexagonal Architecture)
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   └── item.py
+│   │   │   └── interfaces/
+│   │   │       └── item_repository.py
+│   │   ├── application/
+│   │   │   ├── use_cases/
+│   │   │   │   └── item_use_cases.py
+│   │   │   └── dtos/
+│   │   │       └── item_dto.py
+│   │   └── infrastructure/
+│   │       ├── api/
+│   │       │   └── item_router.py
+│   │       ├── orm/
+│   │       │   └── item_orm.py
+│   │       └── database/
+│   │           └── item_repository_impl.py
+│   ├── shared/              # Shared utilities
+│   │   ├── domain/
+│   │   └── infrastructure/
+│   └── routers/             # Legacy routers (redirects to items module)
+│       └── items.py
 ├── requirements.txt         # Python dependencies
 └── .gitignore
 ```
+
+## Adding New Features
+
+To add a new feature following the Hexagonal Architecture:
+
+1. Create a new module in `app/` (e.g., `app/users/`)
+2. Define domain entities in `domain/entities/`
+3. Define repository interfaces in `domain/interfaces/`
+4. Implement use cases in `application/use_cases/`
+5. Create DTOs in `application/dtos/`
+6. Implement repository in `infrastructure/database/`
+7. Create ORM models in `infrastructure/orm/`
+8. Create API router in `infrastructure/api/`
