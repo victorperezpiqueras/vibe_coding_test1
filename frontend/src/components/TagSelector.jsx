@@ -68,6 +68,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
       </div>
 
       <button
+        data-testid="toggle-tags-button"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
@@ -98,6 +99,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
                 )}
               </div>
               <button
+                data-testid="create-new-tag-button"
                 type="button"
                 onClick={() => setIsCreating(true)}
                 className="text-xs text-slate-600 hover:text-slate-800 font-medium"
@@ -109,6 +111,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
             <div className="space-y-2">
               <div>
                 <input
+                  data-testid="new-tag-name-input"
                   type="text"
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
@@ -143,6 +146,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
               </div>
               <div className="flex gap-2">
                 <button
+                  data-testid="create-tag-submit-button"
                   type="button"
                   onClick={handleCreateTag}
                   className="rounded-md bg-indigo-600 text-white px-3 py-1 text-xs hover:bg-indigo-500"
@@ -150,6 +154,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
                   Create
                 </button>
                 <button
+                  data-testid="cancel-create-tag-button"
                   type="button"
                   onClick={() => {
                     setIsCreating(false)

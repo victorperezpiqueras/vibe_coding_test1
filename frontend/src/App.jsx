@@ -177,8 +177,8 @@ function App() {
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <h1 className="text-xl font-semibold text-slate-800">Task Board</h1>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-500">API: <span className={apiStatus === 'healthy' ? 'text-emerald-600' : 'text-rose-600'}>{apiStatus}</span></span>
-            <button onClick={() => { fetchItems(); fetchTags(); }} className="rounded-md bg-slate-900 text-white px-3 py-1.5 text-sm hover:bg-slate-700">Sync</button>
+            <span className="text-sm text-slate-500">API: <span data-testid="api-status" className={apiStatus === 'healthy' ? 'text-emerald-600' : 'text-rose-600'}>{apiStatus}</span></span>
+            <button data-testid="sync-button" onClick={() => { fetchItems(); fetchTags(); }} className="rounded-md bg-slate-900 text-white px-3 py-1.5 text-sm hover:bg-slate-700">Sync</button>
           </div>
         </div>
       </header>
@@ -187,6 +187,7 @@ function App() {
       <section className="mx-auto max-w-7xl w-full px-6 py-6">
         {!showTaskForm ? (
           <button
+            data-testid="add-task-button"
             onClick={() => setShowTaskForm(true)}
             className="w-full rounded-md border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600 hover:border-slate-400 hover:bg-slate-100"
           >
@@ -196,6 +197,7 @@ function App() {
           <form onSubmit={createItem} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm space-y-3">
             <div>
               <input
+                data-testid="task-name-input"
                 type="text"
                 value={newItemName}
                 onChange={(e) => setNewItemName(e.target.value)}
@@ -206,6 +208,7 @@ function App() {
             </div>
             <div>
               <textarea
+                data-testid="task-description-input"
                 value={newItemDescription}
                 onChange={(e) => setNewItemDescription(e.target.value)}
                 placeholder="Description (optional)"
@@ -220,10 +223,11 @@ function App() {
               onCreateTag={createTag}
             />
             <div className="flex gap-2">
-              <button type="submit" className="rounded-md bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-500">
+              <button data-testid="create-task-button" type="submit" className="rounded-md bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-500">
                 Create Task
               </button>
               <button
+                data-testid="cancel-task-button"
                 type="button"
                 onClick={() => {
                   setShowTaskForm(false)
@@ -244,7 +248,7 @@ function App() {
       <main className="mx-auto max-w-7xl w-full px-6 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {COLUMNS.map(col => (
-            <div key={col.key} className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div key={col.key} data-testid={`column-${col.key}`} className="rounded-xl border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
                 <h2 className="text-sm font-semibold text-slate-700">{col.title}</h2>
                 <span className="text-xs text-slate-500">{columnsData[col.key].length}</span>
@@ -260,6 +264,7 @@ function App() {
                   columnsData[col.key].map(item => (
                     <article
                       key={item.id}
+                      data-testid={`task-${item.id}`}
                       className="group rounded-lg border border-slate-200 bg-white p-3 shadow-sm hover:shadow-md cursor-grab"
                       draggable
                       onDragStart={(e) => onDragStart(e, item)}
@@ -279,6 +284,7 @@ function App() {
                           )}
                         </div>
                         <button
+                          data-testid={`delete-task-${item.id}`}
                           onClick={() => deleteItem(item.id)}
                           className="opacity-0 group-hover:opacity-100 rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300"
                         >

@@ -79,6 +79,18 @@ test-frontend: ## Run frontend tests
 	@echo "$(YELLOW)Running frontend tests...$(NC)"
 	cd frontend && npm run test || true
 
+test-e2e: ## Run E2E tests with Playwright
+	@echo "$(YELLOW)Running E2E tests...$(NC)"
+	cd frontend && npm run test:e2e
+
+test-e2e-ui: ## Run E2E tests in UI mode
+	@echo "$(YELLOW)Running E2E tests in UI mode...$(NC)"
+	cd frontend && npm run test:e2e:ui
+
+test-e2e-debug: ## Run E2E tests in debug mode
+	@echo "$(YELLOW)Running E2E tests in debug mode...$(NC)"
+	cd frontend && npm run test:e2e:debug
+
 precommit-run: ## Run pre-commit checks on all files
 	@echo "$(YELLOW)Running pre-commit checks...$(NC)"
 	pre-commit run --all-files
