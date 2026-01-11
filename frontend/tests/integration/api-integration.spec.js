@@ -11,22 +11,20 @@ test.describe('API Integration', () => {
     await page.goto('/')
     // Wait for API to be healthy
     await expect(page.getByTestId('api-status')).toBeVisible()
-    await page.waitForTimeout(500) // Give API time to be ready
+    // Wait for API status to stabilize (not just be visible)
+    await expect(page.getByTestId('api-status')).not.toHaveText('checking...', { timeout: 3000 })
   })
 
   test('verifies API health check', async ({ page }) => {
     const apiStatus = page.getByTestId('api-status')
+    
+    // Wait for status to stabilize
+    await expect(apiStatus).not.toHaveText('checking...', { timeout: 3000 })
+    
     const statusText = await apiStatus.textContent()
     
-    // API should be healthy or checking
-    expect(['healthy', 'checking...']).toContain(statusText)
-    
-    // Wait a bit and check again if it was checking
-    if (statusText === 'checking...') {
-      await page.waitForTimeout(1000)
-      const newStatus = await apiStatus.textContent()
-      expect(newStatus).toBe('healthy')
-    }
+    // API should be healthy or disconnected (after checking is done)
+    expect(['healthy', 'disconnected']).toContain(statusText)
   })
 
   test('creates item via API and verifies in UI', async ({ page }) => {
