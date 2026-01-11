@@ -75,7 +75,9 @@ jobs:
       - name: Run tests
         run: |
           cd backend
-          pytest . -v --tb=short || echo "No tests found or tests failed"
+          # TODO: Remove '|| true' once backend tests are implemented
+          # Currently allows CI to pass when no tests exist
+          pytest . -v --tb=short || true
 
   frontend-lint:
     name: Frontend - Lint
@@ -165,14 +167,20 @@ jobs:
           cd backend
           uvicorn app.main:app --host 0.0.0.0 --port 8000 &
           # Wait for backend to be ready
+          BACKEND_READY=false
           for i in {1..30}; do
             if curl -s http://localhost:8000/health > /dev/null 2>&1; then
               echo "Backend is ready!"
+              BACKEND_READY=true
               break
             fi
             echo "Waiting for backend... ($i/30)"
             sleep 1
           done
+          if [ "$BACKEND_READY" != "true" ]; then
+            echo "Backend failed to start"
+            exit 1
+          fi
 
       - name: Run E2E tests
         run: |
