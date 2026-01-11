@@ -88,8 +88,12 @@ test.describe('End-to-End Workflows', () => {
     
     // Verify all tasks are visible with their tags
     for (const task of tasks) {
-      await expect(page.getByText(task.name)).toBeVisible()
-      await expect(page.getByText(task.tag)).toBeVisible()
+      const taskElement = page.getByText(task.name).first()
+      await taskElement.scrollIntoViewIfNeeded()
+      await expect(taskElement).toBeVisible()
+      const tagElement = page.getByText(task.tag).first()
+      await tagElement.scrollIntoViewIfNeeded()
+      await expect(tagElement).toBeVisible()
     }
   })
 

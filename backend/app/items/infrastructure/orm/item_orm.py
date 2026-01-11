@@ -17,6 +17,4 @@ class ItemORM(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationship to tags
-    tags = relationship(
-        "TagORM", secondary="item_tags", back_populates="items", lazy="joined"
-    )
+    tags = relationship("TagORM", secondary="item_tags", back_populates="items", lazy="joined")

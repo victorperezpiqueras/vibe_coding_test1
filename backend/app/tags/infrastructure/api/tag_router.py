@@ -57,7 +57,7 @@ async def create_tag(
     try:
         return await use_case.execute(tag)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @router.put("/{tag_id}", response_model=TagDTO)
@@ -74,7 +74,7 @@ async def update_tag(
             raise HTTPException(status_code=404, detail="Tag not found")
         return updated_tag
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @router.delete("/{tag_id}", status_code=204)

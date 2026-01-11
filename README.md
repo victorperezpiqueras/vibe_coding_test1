@@ -1,5 +1,7 @@
 # Vibe Coding Test - Monorepo
 
+[![CI](https://github.com/victorperezpiqueras/vibe_coding_test1/actions/workflows/ci.yml/badge.svg)](https://github.com/victorperezpiqueras/vibe_coding_test1/actions/workflows/ci.yml)
+
 A monorepo containing a React frontend and FastAPI backend with SQLite database.
 
 ## Project Structure

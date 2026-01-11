@@ -85,7 +85,7 @@ test.describe('API Integration', () => {
     
     // Wait for DELETE request
     const response = await deletePromise
-    expect(response.status()).toBe(200)
+    expect(response.status()).toBe(204)
     
     // Verify task is removed from UI
     await expect(page.getByText('To Be Deleted')).not.toBeVisible()
@@ -106,7 +106,7 @@ test.describe('API Integration', () => {
     
     // Wait for API call
     const response = await createTagPromise
-    expect(response.status()).toBe(200)
+    expect(response.status()).toBe(201)
     
     // Verify tag data in response
     const tagData = await response.json()
