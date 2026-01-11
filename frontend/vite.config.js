@@ -18,5 +18,12 @@ export default defineConfig({
         '**/main.jsx',
       ],
     },
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/tests/e2e/**',
+      '**/tests/integration/**',
+      '**/.{idea,git,cache,output,temp}/**',
+    ],
   },
 })
