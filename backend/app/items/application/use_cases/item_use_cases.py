@@ -63,9 +63,7 @@ class UpdateItemUseCase:
         if dto.description is not None:
             current_item.description = dto.description
 
-        updated_item = await self.repository.update(
-            item_id, current_item, tag_ids=dto.tag_ids
-        )
+        updated_item = await self.repository.update(item_id, current_item, tag_ids=dto.tag_ids)
         return ItemDTO.model_validate(updated_item)
 
 
