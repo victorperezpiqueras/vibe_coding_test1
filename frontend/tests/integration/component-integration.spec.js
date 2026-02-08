@@ -14,12 +14,12 @@ test.describe('Component Integration', () => {
     // Initially form should be hidden, button visible
     await expect(page.getByTestId('add-task-button')).toBeVisible()
     await expect(page.getByTestId('task-name-input')).not.toBeVisible()
-    
+
     // Click to show form
     await page.getByTestId('add-task-button').click()
     await expect(page.getByTestId('task-name-input')).toBeVisible()
     await expect(page.getByTestId('add-task-button')).not.toBeVisible()
-    
+
     // Cancel to hide form
     await page.getByTestId('cancel-task-button').click()
     await expect(page.getByTestId('add-task-button')).toBeVisible()
@@ -28,17 +28,17 @@ test.describe('Component Integration', () => {
 
   test('task form clears on cancel', async ({ page }) => {
     await page.getByTestId('add-task-button').click()
-    
+
     // Fill in data
     await page.getByTestId('task-name-input').fill('Test Data')
     await page.getByTestId('task-description-input').fill('Test Description')
-    
+
     // Cancel
     await page.getByTestId('cancel-task-button').click()
-    
+
     // Open again
     await page.getByTestId('add-task-button').click()
-    
+
     // Fields should be empty
     const nameValue = await page.getByTestId('task-name-input').inputValue()
     const descValue = await page.getByTestId('task-description-input').inputValue()
@@ -48,15 +48,15 @@ test.describe('Component Integration', () => {
 
   test('task form clears after successful creation', async ({ page }) => {
     await page.getByTestId('add-task-button').click()
-    
+
     // Create a task
     await page.getByTestId('task-name-input').fill('Clear Test')
     await page.getByTestId('task-description-input').fill('Should clear')
     await page.getByTestId('create-task-button').click()
-    
+
     // Wait for task to be created
     await expect(page.getByText('Clear Test')).toBeVisible()
-    
+
     // Form should be hidden
     await expect(page.getByTestId('task-name-input')).not.toBeVisible()
     await expect(page.getByTestId('add-task-button')).toBeVisible()
@@ -64,14 +64,14 @@ test.describe('Component Integration', () => {
 
   test('tag selector integrates with task form', async ({ page }) => {
     await page.getByTestId('add-task-button').click()
-    
+
     // Tag selector should be visible in the form
     await expect(page.getByTestId('toggle-tags-button')).toBeVisible()
-    
+
     // Open tag selector
     await page.getByTestId('toggle-tags-button').click()
     await expect(page.getByTestId('create-new-tag-button')).toBeVisible()
-    
+
     // Create a tag
     await page.getByTestId('create-new-tag-button').click()
     await expect(page.getByTestId('new-tag-name-input')).toBeVisible()
@@ -80,26 +80,26 @@ test.describe('Component Integration', () => {
   test('selected tags persist during form interaction', async ({ page }) => {
     await page.getByTestId('add-task-button').click()
     await page.getByTestId('toggle-tags-button').click()
-    
+
     // Create and select a tag
     await page.getByTestId('create-new-tag-button').click()
     await page.getByTestId('new-tag-name-input').fill('Persist Tag')
-    
-    const tagCreationPromise = page.waitForResponse(response => 
+
+    const tagCreationPromise = page.waitForResponse(response =>
       response.url().includes('/tags/') && response.request().method() === 'POST'
     )
     await page.getByTestId('create-tag-submit-button').click()
     await tagCreationPromise
-    
+
     // Select the tag
     const tagButton = page.locator('button').filter({ hasText: 'Persist Tag' }).first()
     await expect(tagButton).toBeVisible({ timeout: 5000 })
     await tagButton.click()
-    
+
     // Close and reopen tag selector
     await page.getByTestId('toggle-tags-button').click()
     await page.getByTestId('toggle-tags-button').click()
-    
+
     // Tag should still be selected (visible in selected tags section)
     await expect(page.locator('.inline-flex').filter({ hasText: 'Persist Tag' })).toBeVisible()
   })
@@ -109,15 +109,15 @@ test.describe('Component Integration', () => {
     const todoColumn = page.getByTestId('column-todo')
     const initialCountText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
     const initialCount = parseInt(initialCountText || '0')
-    
+
     // Create a new task
     await page.getByTestId('add-task-button').click()
     await page.getByTestId('task-name-input').fill('Column Test')
     await page.getByTestId('create-task-button').click()
-    
+
     // Wait for task to appear
     await expect(page.getByText('Column Test')).toBeVisible()
-    
+
     // Count should increase by 1
     // Wait replaced with expect assertions
     const newCountText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
@@ -131,18 +131,18 @@ test.describe('Component Integration', () => {
     await page.getByTestId('task-name-input').fill('Delete Column Test')
     await page.getByTestId('create-task-button').click()
     await expect(page.getByText('Delete Column Test')).toBeVisible()
-    
+
     // Get count after creation
     const todoColumn = page.getByTestId('column-todo')
     // Wait replaced with expect assertions
     const beforeDeleteText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
     const beforeDeleteCount = parseInt(beforeDeleteText || '0')
-    
+
     // Delete the task
     const taskElement = page.locator('[data-testid^="task-"]').filter({ hasText: 'Delete Column Test' })
     await taskElement.hover()
     await taskElement.getByRole('button', { name: /delete/i }).click()
-    
+
     // Count should decrease by 1
     // Wait replaced with expect assertions
     const afterDeleteText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
@@ -156,20 +156,20 @@ test.describe('Component Integration', () => {
     await page.getByTestId('task-name-input').fill('Drag Test Task')
     await page.getByTestId('create-task-button').click()
     await expect(page.getByText('Drag Test Task')).toBeVisible()
-    
+
     // Task should be in To Do column
     const todoColumn = page.getByTestId('column-todo')
     await expect(todoColumn.getByText('Drag Test Task')).toBeVisible()
-    
+
     // Get the task element
     const taskElement = page.locator('[data-testid^="task-"]').filter({ hasText: 'Drag Test Task' })
-    
+
     // Drag to In Progress column
     const inProgressColumn = page.getByTestId('column-inprogress')
     await taskElement.dragTo(inProgressColumn)
-    
+
     // Wait replaced with expect assertions
-    
+
     // Task should still exist
     await expect(page.getByText('Drag Test Task')).toBeVisible()
   })
@@ -179,7 +179,7 @@ test.describe('Component Integration', () => {
     await page.getByTestId('add-task-button').click()
     await page.getByTestId('task-name-input').fill('Complete Task')
     await page.getByTestId('task-description-input').fill('Full description here')
-    
+
     // Add a tag
     await page.getByTestId('toggle-tags-button').click()
     await page.getByTestId('create-new-tag-button').click()
@@ -198,7 +198,7 @@ test.describe('Component Integration', () => {
     await tagButton.click()
     
     await page.getByTestId('create-task-button').click()
-    
+
     // Verify all elements are displayed in the task card
     const taskCard = page.locator('[data-testid^="task-"]').filter({ hasText: 'Complete Task' })
     await expect(taskCard).toBeVisible()
@@ -213,15 +213,15 @@ test.describe('Component Integration', () => {
     await page.getByTestId('task-name-input').fill('Hover Test')
     await page.getByTestId('create-task-button').click()
     await expect(page.getByText('Hover Test')).toBeVisible()
-    
+
     const taskElement = page.locator('[data-testid^="task-"]').filter({ hasText: 'Hover Test' })
-    
+
     // Delete button should have opacity-0 class (hidden)
     const deleteButton = taskElement.getByRole('button', { name: /delete/i })
-    
+
     // Hover over task
     await taskElement.hover()
-    
+
     // Button should be visible after hover (opacity changes via CSS)
     await expect(deleteButton).toBeVisible()
   })
@@ -232,17 +232,17 @@ test.describe('Component Integration', () => {
     await page.getByTestId('task-name-input').fill('Persist Test')
     await page.getByTestId('create-task-button').click()
     await expect(page.getByText('Persist Test')).toBeVisible()
-    
+
     // Get the task and drag to In Progress
     const taskElement = page.locator('[data-testid^="task-"]').filter({ hasText: 'Persist Test' })
     const inProgressColumn = page.getByTestId('column-inprogress')
     await taskElement.dragTo(inProgressColumn)
     // Wait replaced with expect assertions
-    
+
     // Reload the page
     await page.reload()
     await expect(page.getByTestId('api-status')).toBeVisible()
-    
+
     // Task should still be in the In Progress column
     // (Note: this depends on localStorage working correctly)
     await expect(page.getByText('Persist Test')).toBeVisible()
@@ -256,7 +256,7 @@ test.describe('Component Integration', () => {
       await page.getByTestId('cancel-task-button').click()
       await expect(page.getByTestId('task-name-input')).not.toBeVisible()
     }
-    
+
     // Form should still work correctly
     await page.getByTestId('add-task-button').click()
     await page.getByTestId('task-name-input').fill('Rapid Test')
@@ -270,21 +270,21 @@ test.describe('Component Integration', () => {
     await page.getByTestId('task-name-input').fill('Sync Test')
     await page.getByTestId('create-task-button').click()
     await expect(page.getByText('Sync Test')).toBeVisible()
-    
+
     // Click sync
     await page.getByTestId('sync-button').click()
     // Wait replaced with expect assertions
-    
+
     // Task should still be visible
     await expect(page.getByText('Sync Test')).toBeVisible()
   })
 
   test('API status indicator updates correctly', async ({ page }) => {
     const apiStatus = page.getByTestId('api-status')
-    
+
     // Should eventually show 'healthy'
     await expect(apiStatus).toBeVisible()
-    
+
     // Wait for status to stabilize
     // Wait replaced with expect assertions
     const statusText = await apiStatus.textContent()

@@ -30,7 +30,7 @@ describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     localStorageMock.clear()
-    
+
     // Default mock responses
     mockFetch.mockImplementation((url) => {
       if (url.includes('/health')) {
@@ -93,7 +93,7 @@ describe('App', () => {
 
   it('fetches items and tags on mount', async () => {
     render(<App />)
-    
+
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/health')
       expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/items/')
@@ -109,10 +109,10 @@ describe('App', () => {
   it('opens task form when "Add new task" is clicked', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
+
     const addButton = screen.getByRole('button', { name: /add new task/i })
     await user.click(addButton)
-    
+
     expect(screen.getByPlaceholderText('Task name')).toBeInTheDocument()
     expect(screen.getByPlaceholderText(/description/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /create task/i })).toBeInTheDocument()
@@ -121,13 +121,13 @@ describe('App', () => {
   it('closes task form when Cancel is clicked', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
+
     await user.click(screen.getByRole('button', { name: /add new task/i }))
     expect(screen.getByPlaceholderText('Task name')).toBeInTheDocument()
-    
+
     const cancelButton = screen.getByRole('button', { name: /cancel/i })
     await user.click(cancelButton)
-    
+
     await waitFor(() => {
       expect(screen.queryByPlaceholderText('Task name')).not.toBeInTheDocument()
       expect(screen.getByRole('button', { name: /add new task/i })).toBeInTheDocument()
@@ -169,18 +169,18 @@ describe('App', () => {
     })
 
     render(<App />)
-    
+
     await user.click(screen.getByRole('button', { name: /add new task/i }))
-    
+
     const nameInput = screen.getByPlaceholderText('Task name')
     await user.type(nameInput, 'Test Task')
-    
+
     const descInput = screen.getByPlaceholderText(/description/i)
     await user.type(descInput, 'Test Description')
-    
+
     const createButton = screen.getByRole('button', { name: /create task/i })
     await user.click(createButton)
-    
+
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
         'http://localhost:8000/items/',
@@ -200,12 +200,12 @@ describe('App', () => {
   it('does not create task with empty name', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
+
     await user.click(screen.getByRole('button', { name: /add new task/i }))
-    
+
     const createButton = screen.getByRole('button', { name: /create task/i })
     await user.click(createButton)
-    
+
     // Should not make POST request
     const postCalls = mockFetch.mock.calls.filter(
       call => call[1]?.method === 'POST'
@@ -249,7 +249,7 @@ describe('App', () => {
     })
 
     render(<App />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Task 1')).toBeInTheDocument()
       expect(screen.getByText('Task 2')).toBeInTheDocument()
@@ -291,7 +291,7 @@ describe('App', () => {
     })
 
     render(<App />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Task to Delete')).toBeInTheDocument()
     })
@@ -299,9 +299,9 @@ describe('App', () => {
     // Hover to reveal delete button
     const taskCard = screen.getByText('Task to Delete').closest('article')
     const deleteButton = taskCard.querySelector('button')
-    
+
     await user.click(deleteButton)
-    
+
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
         'http://localhost:8000/items/1',
@@ -313,7 +313,7 @@ describe('App', () => {
   it('syncs data when Sync button is clicked', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
+
     // Wait for initial fetches
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalled()
@@ -323,7 +323,7 @@ describe('App', () => {
 
     const syncButton = screen.getByRole('button', { name: /sync/i })
     await user.click(syncButton)
-    
+
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/items/')
       expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/tags/')
@@ -368,7 +368,7 @@ describe('App', () => {
     })
 
     render(<App />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Task with tags')).toBeInTheDocument()
       expect(screen.getByText('Bug')).toBeInTheDocument()
@@ -407,7 +407,7 @@ describe('App', () => {
     })
 
     render(<App />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Task 1')).toBeInTheDocument()
     })

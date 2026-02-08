@@ -28,10 +28,10 @@ describe('Tag', () => {
     const user = userEvent.setup()
     const handleRemove = vi.fn()
     render(<Tag name="Test" color="#3B82F6" onRemove={handleRemove} />)
-    
+
     const removeButton = screen.getByRole('button', { name: /remove test tag/i })
     await user.click(removeButton)
-    
+
     expect(handleRemove).toHaveBeenCalledTimes(1)
   })
 
@@ -44,7 +44,7 @@ describe('Tag', () => {
   it('renders with different colors correctly', () => {
     const { rerender } = render(<Tag name="Tag1" color="#EF4444" />)
     expect(screen.getByText('Tag1')).toHaveStyle({ backgroundColor: '#EF4444' })
-    
+
     rerender(<Tag name="Tag2" color="#22C55E" />)
     expect(screen.getByText('Tag2')).toHaveStyle({ backgroundColor: '#22C55E' })
   })

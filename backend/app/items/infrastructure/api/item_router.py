@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.shared.infrastructure import get_db
 
 from ...application.dtos.item_dto import ItemCreateDTO, ItemDTO, ItemUpdateDTO
 from ...application.use_cases.item_use_cases import (

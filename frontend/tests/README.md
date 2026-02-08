@@ -137,7 +137,7 @@ The Playwright tests can be integrated into CI/CD pipelines:
 # Example GitHub Actions workflow
 - name: Install dependencies
   run: npm ci
-  
+
 - name: Install Playwright Browsers
   run: npx playwright install --with-deps
 
@@ -145,10 +145,10 @@ The Playwright tests can be integrated into CI/CD pipelines:
   run: |
     cd backend
     uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-    
+
 - name: Run Playwright tests
   run: npm run test:e2e
-  
+
 - name: Upload test results
   uses: actions/upload-artifact@v3
   if: always()

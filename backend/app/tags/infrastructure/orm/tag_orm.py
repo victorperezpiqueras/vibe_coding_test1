@@ -2,7 +2,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from app.database import Base
+from app.shared.infrastructure import Base
 
 # Association table for many-to-many relationship between items and tags
 item_tags = Table(
