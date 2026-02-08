@@ -1,3 +1,4 @@
-# Shared infrastructurefrom .database import Base, SessionLocal, engine, get_db
+# Shared infrastructure
+from .database import Base, SessionLocal, engine, get_db
 
 __all__ = ["Base", "SessionLocal", "engine", "get_db"]

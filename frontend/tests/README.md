@@ -1,18 +1,13 @@
-# E2E and Integration Tests
+# E2E Tests
 
-This directory contains end-to-end (E2E) and integration tests for the frontend application using **Playwright**.
+This directory contains end-to-end (E2E) tests for the frontend application using **Playwright**.
 
 ## Test Structure
 
 ```
 tests/
-├── e2e/
-│   ├── items.spec.js          # Tests for item/task management
-│   ├── tags.spec.js            # Tests for tag management
-│   └── workflows.spec.js       # Tests for complete user workflows
-└── integration/
-    ├── api-integration.spec.js        # Frontend-backend API integration tests
-    └── component-integration.spec.js  # Component interaction tests
+└── e2e/
+    └── example.spec.js          # E2E test template (commented)
 ```
 
 ## Prerequisites
@@ -69,53 +64,7 @@ npm run test:e2e:report
 
 ### E2E Tests
 
-**Item Management** (`items.spec.js`)
-- Display task board interface
-- Create new tasks
-- Cancel task creation
-- Delete tasks
-- Create multiple tasks
-- Sync data
-- API status display
-- Empty state handling
-
-**Tag Management** (`tags.spec.js`)
-- Create tags
-- Assign tags to tasks
-- Select/deselect tags
-- Toggle tag selector
-- Tag color selection
-- Tag display states
-
-**Workflows** (`workflows.spec.js`)
-- Complete task lifecycle (create → tag → delete)
-- Multiple tasks with different tags
-- Data persistence after sync
-- Drag and drop between columns
-- Page refresh persistence
-- Bulk operations
-- Rapid form interactions
-
-### Integration Tests
-
-**API Integration** (`api-integration.spec.js`)
-- API health check verification
-- Item CRUD operations via API
-- Tag CRUD operations via API
-- Request/response validation
-- CORS handling
-- Error handling
-- Payload structure validation
-
-**Component Integration** (`component-integration.spec.js`)
-- Form show/hide behavior
-- Form state management
-- Tag selector integration
-- Column updates
-- Drag and drop functionality
-- Task card display
-- LocalStorage persistence
-- Rapid interactions
+Currently, the E2E tests have been removed. A commented template is available in `example.spec.js` for future test development.
 
 ## Test Configuration
 
