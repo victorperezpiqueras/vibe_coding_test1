@@ -107,7 +107,7 @@ test.describe('Component Integration', () => {
   test('columns update when tasks are created', async ({ page }) => {
     // Get initial count in To Do column
     const todoColumn = page.getByTestId('column-todo')
-    const initialCountText = await todoColumn.locator('.text-xs.text-slate-500').textContent()
+    const initialCountText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
     const initialCount = parseInt(initialCountText || '0')
 
     // Create a new task
@@ -120,7 +120,7 @@ test.describe('Component Integration', () => {
 
     // Count should increase by 1
     // Wait replaced with expect assertions
-    const newCountText = await todoColumn.locator('.text-xs.text-slate-500').textContent()
+    const newCountText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
     const newCount = parseInt(newCountText || '0')
     expect(newCount).toBe(initialCount + 1)
   })
@@ -135,7 +135,7 @@ test.describe('Component Integration', () => {
     // Get count after creation
     const todoColumn = page.getByTestId('column-todo')
     // Wait replaced with expect assertions
-    const beforeDeleteText = await todoColumn.locator('.text-xs.text-slate-500').textContent()
+    const beforeDeleteText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
     const beforeDeleteCount = parseInt(beforeDeleteText || '0')
 
     // Delete the task
@@ -145,7 +145,7 @@ test.describe('Component Integration', () => {
 
     // Count should decrease by 1
     // Wait replaced with expect assertions
-    const afterDeleteText = await todoColumn.locator('.text-xs.text-slate-500').textContent()
+    const afterDeleteText = await todoColumn.locator('span.text-xs.text-slate-500').textContent()
     const afterDeleteCount = parseInt(afterDeleteText || '0')
     expect(afterDeleteCount).toBe(beforeDeleteCount - 1)
   })
@@ -184,14 +184,19 @@ test.describe('Component Integration', () => {
     await page.getByTestId('toggle-tags-button').click()
     await page.getByTestId('create-new-tag-button').click()
     await page.getByTestId('new-tag-name-input').fill('Display Tag')
+    
+    // Wait for tag creation
+    const tagCreationPromise = page.waitForResponse(response => 
+      response.url().includes('/tags/') && response.request().method() === 'POST'
+    )
     await page.getByTestId('create-tag-submit-button').click()
-    // Wait replaced with expect assertions
-
+    await tagCreationPromise
+    
+    // Select the tag
     const tagButton = page.locator('button').filter({ hasText: 'Display Tag' }).first()
-    if (await tagButton.isVisible()) {
-      await tagButton.click()
-    }
-
+    await expect(tagButton).toBeVisible({ timeout: 5000 })
+    await tagButton.click()
+    
     await page.getByTestId('create-task-button').click()
 
     // Verify all elements are displayed in the task card
