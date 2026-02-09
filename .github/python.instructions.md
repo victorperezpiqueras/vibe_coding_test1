@@ -57,7 +57,7 @@ def get_mapping() -> Dict[str, int]:  # Use dict[str, int] instead
 
 ### Type Aliases
 
-Use the `type` keyword for type aliases (PEP 613):
+Use the `type` keyword for type aliases (PEP 695):
 
 ```python
 # ✅ Correct - Modern type alias
