@@ -22,6 +22,11 @@ install-frontend: ## Install frontend dependencies
 	cd frontend && npm install
 	@echo "$(GREEN)Frontend dependencies installed$(NC)"
 
+install-frontend-ci: ## Install frontend dependencies for CI (uses npm ci)
+	@echo "$(YELLOW)Installing frontend dependencies (CI mode)...$(NC)"
+	cd frontend && npm ci
+	@echo "$(GREEN)Frontend dependencies installed$(NC)"
+
 precommit-install: ## Install pre-commit hooks
 	@echo "$(YELLOW)Installing pre-commit hooks...$(NC)"
 	pre-commit install
@@ -51,6 +56,10 @@ lint-backend: ## Lint backend code
 	@echo "$(YELLOW)Linting backend code...$(NC)"
 	cd backend && pylint app/ --disable=all --enable=E,F || true
 
+lint-backend-ruff: ## Lint backend code with ruff
+	@echo "$(YELLOW)Linting backend code with ruff...$(NC)"
+	cd backend && ruff check app/
+
 lint-frontend: ## Lint frontend code
 	@echo "$(YELLOW)Linting frontend code...$(NC)"
 	cd frontend && npm run lint
@@ -62,6 +71,10 @@ format: ## Format code in frontend and backend
 format-backend: ## Format backend code with black
 	@echo "$(YELLOW)Formatting backend code...$(NC)"
 	cd backend && black app/ || true
+
+format-backend-check: ## Check backend code formatting with ruff
+	@echo "$(YELLOW)Checking backend code formatting with ruff...$(NC)"
+	cd backend && ruff format --check app/
 
 format-frontend: ## Format frontend code with prettier
 	@echo "$(YELLOW)Formatting frontend code...$(NC)"
@@ -90,6 +103,10 @@ test-e2e-ui: ## Run E2E tests in UI mode
 test-e2e-debug: ## Run E2E tests in debug mode
 	@echo "$(YELLOW)Running E2E tests in debug mode...$(NC)"
 	cd frontend && npm run test:e2e:debug
+
+test-e2e-ci: ## Run E2E tests in CI mode (chromium only)
+	@echo "$(YELLOW)Running E2E tests in CI mode...$(NC)"
+	cd frontend && npm run test:e2e -- --project=chromium
 
 precommit-run: ## Run pre-commit checks on all files
 	@echo "$(YELLOW)Running pre-commit checks...$(NC)"

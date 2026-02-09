@@ -30,9 +30,7 @@ jobs:
           pip install ruff==0.1.11
 
       - name: Check formatting with ruff
-        run: |
-          cd backend
-          ruff format --check app/
+        run: make format-backend-check
 
   backend-lint:
     name: Backend - Lint
@@ -52,9 +50,7 @@ jobs:
           pip install ruff==0.1.11
 
       - name: Lint with ruff
-        run: |
-          cd backend
-          ruff check app/
+        run: make lint-backend-ruff
 
   backend-test:
     name: Backend - Tests
@@ -70,17 +66,10 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
-          pip install pytest pytest-cov
+        run: make install-backend
 
       - name: Run tests
-        run: |
-          cd backend
-          # TODO: Remove '|| true' once backend tests are implemented
-          # Currently allows CI to pass when no tests exist
-          pytest . -v --tb=short || true
+        run: make test-backend
 
   frontend-lint:
     name: Frontend - Lint
@@ -97,14 +86,10 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
+        run: make install-frontend-ci
 
       - name: Lint with ESLint
-        run: |
-          cd frontend
-          npm run lint
+        run: make lint-frontend
 
   frontend-test:
     name: Frontend - Unit Tests
@@ -121,9 +106,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
+        run: make install-frontend-ci
 
       - name: Run unit tests
         run: |
@@ -145,9 +128,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
+        run: make install-frontend-ci
 
       - name: Install Playwright browsers
         run: |
@@ -161,9 +142,7 @@ jobs:
           cache: 'pip'
 
       - name: Install backend dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
+        run: make install-backend
 
       - name: Clean database for E2E tests
         run: |
@@ -191,9 +170,7 @@ jobs:
           fi
 
       - name: Run E2E tests
-        run: |
-          cd frontend
-          npm run test:e2e -- --project=chromium
+        run: make test-e2e-ci
 
       - name: Upload Playwright report
         if: always()

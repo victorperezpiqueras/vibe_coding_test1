@@ -43,7 +43,47 @@ vibe_coding_test1/
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js 20 or higher (for frontend)
+- Python 3.11 or higher (for backend)
+- Make (for running Makefile commands)
+
+### Quick Start
+
+The easiest way to get started is using the Makefile commands:
+
+1. Install all dependencies:
+
+```bash
+make install
+```
+
+2. Run both frontend and backend in development mode:
+
+```bash
+make dev
+```
+
+This will start:
+- Frontend at <http://localhost:5173>
+- Backend at <http://localhost:8000>
+- API Documentation at <http://localhost:8000/docs>
+
+### Alternative: Manual Setup
+
+If you prefer to set up each component separately, see the sections below.
+
 ### Frontend Setup
+
+#### Using Makefile (Recommended)
+
+```bash
+make install-frontend  # Install dependencies
+make frontend          # Start dev server
+```
+
+#### Manual Setup
 
 1. Navigate to the frontend directory:
 
@@ -51,13 +91,13 @@ vibe_coding_test1/
 cd frontend
 ```
 
-1. Install dependencies:
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-1. Start the development server:
+3. Start the development server:
 
 ```bash
 npm run dev
@@ -67,26 +107,35 @@ The frontend will be available at <http://localhost:5173>
 
 ### Backend Setup
 
+#### Using Makefile (Recommended)
+
+```bash
+make install-backend  # Install dependencies
+make backend          # Start dev server
+```
+
+#### Manual Setup
+
 1. Navigate to the backend directory:
 
 ```bash
 cd backend
 ```
 
-1. Create a virtual environment:
+2. Create a virtual environment:
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-1. Install dependencies:
+3. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-1. Start the backend server:
+4. Start the backend server:
 
 ```bash
 uvicorn app.main:app --reload
@@ -117,6 +166,16 @@ The backend will be available at:
 
 ### Running Both Services
 
+#### Using Makefile (Recommended)
+
+```bash
+make dev
+```
+
+This will run both the frontend and backend in parallel.
+
+#### Manual Setup
+
 For development, you'll need to run both the frontend and backend in separate terminals:
 
 **Terminal 1 - Backend:**
@@ -134,7 +193,47 @@ cd frontend
 npm run dev
 ```
 
+### Linting and Formatting
+
+Run linting checks:
+
+```bash
+make lint              # Lint both frontend and backend
+make lint-frontend     # Lint frontend only
+make lint-backend      # Lint backend only (pylint)
+make lint-backend-ruff # Lint backend with ruff
+```
+
+Format code:
+
+```bash
+make format            # Format both frontend and backend
+make format-frontend   # Format frontend only
+make format-backend    # Format backend only
+```
+
+### Testing
+
+Run tests:
+
+```bash
+make test              # Run all tests
+make test-frontend     # Run frontend tests only
+make test-backend      # Run backend tests only
+make test-e2e          # Run E2E tests
+```
+
 ### Building for Production
+
+#### Using Makefile (Recommended)
+
+```bash
+make build             # Build both frontend and backend
+make build-frontend    # Build frontend only
+make build-backend     # Build backend only
+```
+
+#### Manual Build
 
 **Frontend:**
 
@@ -145,6 +244,14 @@ npm run build
 
 **Backend:**
 The backend can be deployed using any ASGI server like Uvicorn or Gunicorn.
+
+### Other Useful Commands
+
+```bash
+make help              # Display all available commands
+make clean             # Clean all generated files and caches
+make precommit-run     # Run pre-commit checks on all files
+```
 
 ## API Endpoints
 

@@ -42,8 +42,19 @@ For detailed architecture guidelines, see [.github/backend-architecture.instruct
 
 - Python 3.8 or higher
 - pip
+- Make (optional, for using Makefile commands)
 
 ### Installation
+
+#### Using Makefile (Recommended)
+
+From the project root directory:
+
+```bash
+make install-backend
+```
+
+#### Manual Installation
 
 1. Create a virtual environment:
 
@@ -52,13 +63,23 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-1. Install dependencies:
+2. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Running the Server
+
+#### Using Makefile (Recommended)
+
+From the project root directory:
+
+```bash
+make backend
+```
+
+#### Manual Start
 
 Start the development server:
 
@@ -76,6 +97,28 @@ The API will be available at:
 
 The SQLite database file (`app.db`) will be created automatically
 in the backend directory when you first run the application.
+
+## Development
+
+### Linting
+
+```bash
+make lint-backend       # Lint with pylint
+make lint-backend-ruff  # Lint with ruff
+```
+
+### Formatting
+
+```bash
+make format-backend        # Format with black
+make format-backend-check  # Check formatting with ruff
+```
+
+### Testing
+
+```bash
+make test-backend  # Run backend tests
+```
 
 ## API Endpoints
 
