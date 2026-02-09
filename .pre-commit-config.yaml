@@ -44,6 +44,14 @@ repos:
           - "eslint-plugin-react-hooks@7.0.1"
           - "eslint-plugin-react-refresh@0.4.24"
 
+      # Poetry requirements generation
+      - id: poetry-export
+        name: poetry-export (backend)
+        language: system
+        entry: bash -c 'cd backend && poetry export -f requirements.txt --output libraries/requirements.txt --without-hashes --without dev && poetry export -f requirements.txt --output libraries/requirements-dev.txt --without-hashes --with dev'
+        files: ^backend/pyproject\.toml$
+        pass_filenames: false
+
 ci:
   autofix_commit_msg: |
     refactor: auto-formatting with pre-commit hooks

@@ -40,6 +40,7 @@ vibe_coding_test1/
 - **SQLite** - Lightweight database
 - **Uvicorn** - ASGI server
 - **Pydantic** - Data validation
+- **Poetry** - Python dependency management
 
 ## Getting Started
 
@@ -47,6 +48,7 @@ vibe_coding_test1/
 
 - Node.js 20 or higher (for frontend)
 - Python 3.11 or higher (for backend)
+- Poetry (for Python dependency management) - Install with: `pip install poetry`
 - Make (for running Makefile commands)
 
 ### Quick Start
@@ -131,8 +133,14 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 3. Install dependencies:
 
+**Using pip (recommended for production):**
 ```bash
-pip install -r requirements.txt
+pip install -r libraries/requirements.txt
+```
+
+**Using poetry (recommended for development):**
+```bash
+poetry install
 ```
 
 4. Start the backend server:
