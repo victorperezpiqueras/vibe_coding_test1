@@ -47,7 +47,7 @@ vibe_coding_test1/
 ### Prerequisites
 
 - Node.js 20 or higher (for frontend)
-- Python 3.11 or higher (for backend)
+- Python 3.13 or higher (for backend)
 - Poetry (for Python dependency management) - Install with: `pip install poetry`
 - Make (for running Makefile commands)
 

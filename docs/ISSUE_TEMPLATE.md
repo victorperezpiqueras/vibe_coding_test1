@@ -49,7 +49,7 @@ assignees: ""
 | Item                          | Value                                               |
 | ----------------------------- | --------------------------------------------------- |
 | **OS**                        | <!-- e.g., Windows 11, macOS 14.2, Ubuntu 22.04 --> |
-| **Python Version**            | <!-- e.g., 3.11.0 -->                               |
+| **Python Version**            | <!-- e.g., 3.13.0 -->                               |
 | **Node.js Version**           | <!-- e.g., 18.12.0 -->                              |
 | **Framework/Library Version** | <!-- e.g., FastAPI 0.110.0, Vue 3.3.0 -->           |
 | **Browser**                   | <!-- if applicable -->                              |

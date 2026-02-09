@@ -9,7 +9,7 @@ version = "1.0.0"
 [tool.ruff]
 # Ruff configuration for the project
 line-length = 100
-target-version = "py38"
+target-version = "py313"
 
 [tool.ruff.lint]
 # Enable specific rules
