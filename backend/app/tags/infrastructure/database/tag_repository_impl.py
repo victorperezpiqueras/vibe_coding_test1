@@ -2,9 +2,9 @@ from typing import List, Optional
 
 from sqlalchemy.orm import Session
 
-from ...domain.entities.tag import Tag
-from ...domain.interfaces.tag_repository import TagRepositoryInterface
-from ..orm.tag_orm import TagORM
+from app.tags.domain.entities.tag import Tag
+from app.tags.domain.interfaces.tag_repository import TagRepositoryInterface
+from app.tags.infrastructure.orm.tag_orm import TagORM
 
 
 class TagRepositoryImpl(TagRepositoryInterface):

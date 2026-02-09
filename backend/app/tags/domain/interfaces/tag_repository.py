@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from ...domain.entities.tag import Tag
+from app.tags.domain.entities.tag import Tag
 
 
 class TagRepositoryInterface(ABC):

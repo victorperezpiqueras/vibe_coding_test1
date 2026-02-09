@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from ...domain.entities.item import Item
-from ...domain.interfaces.item_repository import ItemRepository
-from ..dtos.item_dto import ItemCreateDTO, ItemDTO, ItemUpdateDTO
+from app.items.application.dtos.item_dto import ItemCreateDTO, ItemDTO, ItemUpdateDTO
+from app.items.domain.entities.item import Item
+from app.items.domain.interfaces.item_repository import ItemRepository
 
 
 class GetItemUseCase:

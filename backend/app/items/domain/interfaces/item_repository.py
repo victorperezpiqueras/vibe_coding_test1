@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from ..entities.item import Item
+from app.items.domain.entities.item import Item
 
 
 class ItemRepository(ABC):

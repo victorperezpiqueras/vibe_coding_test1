@@ -4,16 +4,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.shared.infrastructure import get_db
-
-from ...application.dtos.tag_dto import TagCreateDTO, TagDTO, TagUpdateDTO
-from ...application.use_cases.tag_use_cases import (
+from app.tags.application.dtos.tag_dto import TagCreateDTO, TagDTO, TagUpdateDTO
+from app.tags.application.use_cases.tag_use_cases import (
     CreateTagUseCase,
     DeleteTagUseCase,
     GetAllTagsUseCase,
     GetTagUseCase,
     UpdateTagUseCase,
 )
-from ...infrastructure.database.tag_repository_impl import TagRepositoryImpl
+from app.tags.infrastructure.database.tag_repository_impl import TagRepositoryImpl
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 

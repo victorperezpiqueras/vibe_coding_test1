@@ -2,10 +2,10 @@ from typing import List, Optional
 
 from sqlalchemy.orm import Session
 
-from ....tags.infrastructure.orm.tag_orm import TagORM
-from ...domain.entities.item import Item
-from ...domain.interfaces.item_repository import ItemRepository
-from ..orm.item_orm import ItemORM
+from app.items.domain.entities.item import Item
+from app.items.domain.interfaces.item_repository import ItemRepository
+from app.items.infrastructure.orm.item_orm import ItemORM
+from app.tags.infrastructure.orm.tag_orm import TagORM
 
 
 class ItemRepositoryImpl(ItemRepository):

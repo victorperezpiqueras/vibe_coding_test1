@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from ...domain.entities.tag import Tag
-from ...domain.interfaces.tag_repository import TagRepositoryInterface
-from ..dtos.tag_dto import TagCreateDTO, TagDTO, TagUpdateDTO
+from app.tags.application.dtos.tag_dto import TagCreateDTO, TagDTO, TagUpdateDTO
+from app.tags.domain.entities.tag import Tag
+from app.tags.domain.interfaces.tag_repository import TagRepositoryInterface
 
 
 class CreateTagUseCase:
