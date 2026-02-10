@@ -20,8 +20,8 @@ def db_engine():
 @pytest.fixture
 def db_session(db_engine) -> Session:
     """Create a test database session"""
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
-    session = TestingSessionLocal()
+    testing_session_local = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
+    session = testing_session_local()
     try:
         yield session
     finally:
