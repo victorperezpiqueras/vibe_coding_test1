@@ -94,8 +94,9 @@ describe('TagSelector', () => {
 
   it('creates a new tag', async () => {
     const user = userEvent.setup()
-    const onCreateTag = vi.fn().mockResolvedValue()
-    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} />)
+    const onCreateTag = vi.fn().mockResolvedValue({ id: 4, name: 'New Tag', color: '#EF4444' })
+    const onTagsChange = vi.fn()
+    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} onTagsChange={onTagsChange} />)
 
     await user.click(screen.getByRole('button', { name: /add tags/i }))
     await user.click(screen.getByRole('button', { name: /create new tag/i }))
@@ -111,13 +112,16 @@ describe('TagSelector', () => {
         name: 'New Tag',
         color: '#EF4444', // Default color
       })
+      // Verify the newly created tag is automatically selected
+      expect(onTagsChange).toHaveBeenCalledWith([4])
     })
   })
 
   it('selects different color when creating tag', async () => {
     const user = userEvent.setup()
-    const onCreateTag = vi.fn().mockResolvedValue()
-    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} />)
+    const onCreateTag = vi.fn().mockResolvedValue({ id: 5, name: 'Blue Tag', color: '#3B82F6' })
+    const onTagsChange = vi.fn()
+    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} onTagsChange={onTagsChange} />)
 
     await user.click(screen.getByRole('button', { name: /add tags/i }))
     await user.click(screen.getByRole('button', { name: /create new tag/i }))
@@ -137,6 +141,8 @@ describe('TagSelector', () => {
         name: 'Blue Tag',
         color: '#3B82F6',
       })
+      // Verify the newly created tag is automatically selected
+      expect(onTagsChange).toHaveBeenCalledWith([5])
     })
   })
 
@@ -196,8 +202,9 @@ describe('TagSelector', () => {
 
   it('trims whitespace from tag name when creating', async () => {
     const user = userEvent.setup()
-    const onCreateTag = vi.fn().mockResolvedValue()
-    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} />)
+    const onCreateTag = vi.fn().mockResolvedValue({ id: 6, name: 'Trimmed Tag', color: '#EF4444' })
+    const onTagsChange = vi.fn()
+    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} onTagsChange={onTagsChange} />)
 
     await user.click(screen.getByRole('button', { name: /add tags/i }))
     await user.click(screen.getByRole('button', { name: /create new tag/i }))
@@ -213,13 +220,16 @@ describe('TagSelector', () => {
         name: 'Trimmed Tag',
         color: '#EF4444',
       })
+      // Verify the newly created tag is automatically selected
+      expect(onTagsChange).toHaveBeenCalledWith([6])
     })
   })
 
   it('creates tag when Enter key is pressed', async () => {
     const user = userEvent.setup()
-    const onCreateTag = vi.fn().mockResolvedValue()
-    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} />)
+    const onCreateTag = vi.fn().mockResolvedValue({ id: 7, name: 'Enter Tag', color: '#EF4444' })
+    const onTagsChange = vi.fn()
+    render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} onTagsChange={onTagsChange} />)
 
     await user.click(screen.getByRole('button', { name: /add tags/i }))
     await user.click(screen.getByRole('button', { name: /create new tag/i }))
@@ -232,6 +242,8 @@ describe('TagSelector', () => {
         name: 'Enter Tag',
         color: '#EF4444',
       })
+      // Verify the newly created tag is automatically selected
+      expect(onTagsChange).toHaveBeenCalledWith([7])
     })
   })
 })
