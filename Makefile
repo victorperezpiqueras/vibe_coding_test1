@@ -14,8 +14,29 @@ install: install-backend install-frontend precommit-install ## Install all depen
 
 install-backend: ## Install backend dependencies
 	@echo "$(YELLOW)Installing backend dependencies...$(NC)"
-	cd backend && pip install -r requirements.txt
+	cd backend && pip install -r libraries/requirements.txt
 	@echo "$(GREEN)Backend dependencies installed$(NC)"
+
+install-backend-dev: ## Install backend dependencies including dev dependencies
+	@echo "$(YELLOW)Installing backend dev dependencies...$(NC)"
+	cd backend && pip install -r libraries/requirements-dev.txt
+	@echo "$(GREEN)Backend dev dependencies installed$(NC)"
+
+install-backend-poetry: ## Install backend dependencies using poetry
+	@echo "$(YELLOW)Installing backend dependencies with poetry...$(NC)"
+	cd backend && poetry install
+	@echo "$(GREEN)Backend dependencies installed with poetry$(NC)"
+
+poetry-lock: ## Update poetry.lock file
+	@echo "$(YELLOW)Updating poetry.lock...$(NC)"
+	cd backend && poetry lock
+	@echo "$(GREEN)Poetry lock file updated$(NC)"
+
+poetry-export: ## Export poetry dependencies to requirements files
+	@echo "$(YELLOW)Exporting poetry dependencies...$(NC)"
+	cd backend && poetry export -f requirements.txt --output libraries/requirements.txt --without-hashes --without dev
+	cd backend && poetry export -f requirements.txt --output libraries/requirements-dev.txt --without-hashes --with dev
+	@echo "$(GREEN)Requirements files generated$(NC)"
 
 install-frontend: ## Install frontend dependencies
 	@echo "$(YELLOW)Installing frontend dependencies...$(NC)"

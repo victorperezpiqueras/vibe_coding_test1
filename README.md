@@ -40,13 +40,15 @@ vibe_coding_test1/
 - **SQLite** - Lightweight database
 - **Uvicorn** - ASGI server
 - **Pydantic** - Data validation
+- **Poetry** - Python dependency management
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 20 or higher (for frontend)
-- Python 3.13 or higher (for backend)
+- Python 3.13 (required for backend)
+- Poetry (for Python dependency management) - Install with: `pip install poetry`
 - Make (for running Makefile commands)
 
 ### Quick Start
@@ -107,42 +109,16 @@ The frontend will be available at <http://localhost:5173>
 
 ### Backend Setup
 
-#### Using Makefile (Recommended)
+For detailed backend setup instructions, see the [backend README](backend/README.md).
+
+#### Quick Start (Using Makefile)
 
 ```bash
 make install-backend  # Install dependencies
 make backend          # Start dev server
 ```
 
-#### Manual Setup
-
-1. Navigate to the backend directory:
-
-```bash
-cd backend
-```
-
-2. Create a virtual environment:
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-4. Start the backend server:
-
-```bash
-uvicorn app.main:app --reload
-```
-
 The backend will be available at:
-
 - API: <http://localhost:8000>
 - API Documentation: <http://localhost:8000/docs>
 
