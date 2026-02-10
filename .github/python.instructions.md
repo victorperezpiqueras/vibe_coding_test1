@@ -96,7 +96,7 @@ async def fetch_data(url: str) -> dict[str, Any]:
 class ItemRepository:
     async def get_by_id(self, item_id: int) -> Item | None:
         pass
-    
+
     async def get_all(self, skip: int = 0, limit: int = 100) -> list[Item]:
         pass
 ```
@@ -154,7 +154,7 @@ Use concise docstrings for classes and complex functions:
 ```python
 class ItemRepository:
     """Repository interface for Item entities"""
-    
+
     async def get_by_id(self, item_id: int) -> Item | None:
         """Get an item by ID"""
         pass
@@ -181,7 +181,7 @@ def get_items(
 ```python
 class Item:
     """Domain entity representing an Item"""
-    
+
     def __init__(
         self,
         name: str,
@@ -203,7 +203,7 @@ class ItemRepository:
     async def get_all(self, skip: int = 0, limit: int = 100) -> list[Item]:
         # Database query
         pass
-    
+
     async def create(self, item: Item) -> Item:
         # Database insert
         pass

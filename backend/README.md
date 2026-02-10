@@ -126,9 +126,55 @@ make format-backend-check  # Check formatting with ruff
 
 ### Testing
 
+The backend includes comprehensive unit tests for use cases and API endpoints.
+
+#### Running Tests
+
 ```bash
-make test-backend  # Run backend tests
+make test-backend  # Run all backend tests
 ```
+
+Or using pytest directly:
+
+```bash
+cd backend
+pytest                    # Run all tests
+pytest tests/items/       # Run only items tests
+pytest tests/tags/        # Run only tags tests
+pytest -v                 # Verbose output
+pytest -k "test_create"   # Run tests matching pattern
+```
+
+#### Test Structure
+
+The test suite follows the same hexagonal architecture structure as the application:
+
+```
+tests/
+├── items/
+│   ├── application/
+│   │   ├── fixtures.py              # Reusable test fixtures for Items
+│   │   └── use_cases/
+│   │       └── test_item_use_cases.py
+│   └── infrastructure/
+│       └── api/
+│           └── test_item_router.py
+└── tags/
+    ├── application/
+    │   ├── fixtures.py              # Reusable test fixtures for Tags
+    │   └── use_cases/
+    │       └── test_tag_use_cases.py
+    └── infrastructure/
+        └── api/
+            └── test_tag_router.py
+```
+
+#### Test Coverage
+
+- **Use Case Tests**: Mock repositories to test business logic in isolation
+- **API Tests**: Mock use cases to test HTTP endpoints and status codes
+- **Total**: 45 tests covering all CRUD operations for Items and Tags
+
 
 ## API Endpoints
 
