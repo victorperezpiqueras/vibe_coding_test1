@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 
 class Item:
@@ -8,10 +7,10 @@ class Item:
     def __init__(
         self,
         name: str,
-        description: Optional[str] = None,
-        id: Optional[int] = None,
-        created_at: Optional[datetime] = None,
-        updated_at: Optional[datetime] = None,
+        description: str | None = None,
+        id: int | None = None,
+        created_at: datetime | None = None,
+        updated_at: datetime | None = None,
     ):
         self.id = id
         self.name = name

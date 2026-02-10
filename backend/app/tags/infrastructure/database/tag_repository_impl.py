@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from sqlalchemy.orm import Session
 
 from app.tags.domain.entities.tag import Tag
@@ -41,22 +39,22 @@ class TagRepositoryImpl(TagRepositoryInterface):
         self.db.refresh(db_tag)
         return self._to_entity(db_tag)
 
-    async def get_by_id(self, tag_id: int) -> Optional[Tag]:
+    async def get_by_id(self, tag_id: int) -> Tag | None:
         """Get a tag by ID"""
         db_tag = self.db.query(TagORM).filter(TagORM.id == tag_id).first()
         return self._to_entity(db_tag) if db_tag else None
 
-    async def get_all(self, skip: int = 0, limit: int = 100) -> List[Tag]:
+    async def get_all(self, skip: int = 0, limit: int = 100) -> list[Tag]:
         """Get all tags"""
         db_tags = self.db.query(TagORM).offset(skip).limit(limit).all()
         return [self._to_entity(tag) for tag in db_tags]
 
-    async def get_by_name(self, name: str) -> Optional[Tag]:
+    async def get_by_name(self, name: str) -> Tag | None:
         """Get a tag by name"""
         db_tag = self.db.query(TagORM).filter(TagORM.name == name).first()
         return self._to_entity(db_tag) if db_tag else None
 
-    async def update(self, tag_id: int, tag: Tag) -> Optional[Tag]:
+    async def update(self, tag_id: int, tag: Tag) -> Tag | None:
         """Update a tag"""
         db_tag = self.db.query(TagORM).filter(TagORM.id == tag_id).first()
         if not db_tag:
@@ -81,7 +79,7 @@ class TagRepositoryImpl(TagRepositoryInterface):
         self.db.commit()
         return True
 
-    async def get_by_ids(self, tag_ids: List[int]) -> List[Tag]:
+    async def get_by_ids(self, tag_ids: list[int]) -> list[Tag]:
         """Get multiple tags by their IDs"""
         db_tags = self.db.query(TagORM).filter(TagORM.id.in_(tag_ids)).all()
         return [self._to_entity(tag) for tag in db_tags]

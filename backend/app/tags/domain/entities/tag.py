@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 
 class Tag:
@@ -9,9 +8,9 @@ class Tag:
         self,
         name: str,
         color: str,
-        id: Optional[int] = None,
-        created_at: Optional[datetime] = None,
-        updated_at: Optional[datetime] = None,
+        id: int | None = None,
+        created_at: datetime | None = None,
+        updated_at: datetime | None = None,
     ):
         self.id = id
         self.name = name

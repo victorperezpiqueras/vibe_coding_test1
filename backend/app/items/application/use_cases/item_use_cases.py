@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from app.items.application.dtos.item_dto import ItemCreateDTO, ItemDTO, ItemUpdateDTO
 from app.items.domain.entities.item import Item
 from app.items.domain.interfaces.item_repository import ItemRepository
@@ -11,7 +9,7 @@ class GetItemUseCase:
     def __init__(self, repository: ItemRepository):
         self.repository = repository
 
-    async def execute(self, item_id: int) -> Optional[ItemDTO]:
+    async def execute(self, item_id: int) -> ItemDTO | None:
         """Get an item by ID"""
         item = await self.repository.get_by_id(item_id)
         if item is None:
@@ -25,7 +23,7 @@ class GetAllItemsUseCase:
     def __init__(self, repository: ItemRepository):
         self.repository = repository
 
-    async def execute(self, skip: int = 0, limit: int = 100) -> List[ItemDTO]:
+    async def execute(self, skip: int = 0, limit: int = 100) -> list[ItemDTO]:
         """Get all items with pagination"""
         items = await self.repository.get_all(skip=skip, limit=limit)
         return [ItemDTO.model_validate(item) for item in items]
@@ -50,7 +48,7 @@ class UpdateItemUseCase:
     def __init__(self, repository: ItemRepository):
         self.repository = repository
 
-    async def execute(self, item_id: int, dto: ItemUpdateDTO) -> Optional[ItemDTO]:
+    async def execute(self, item_id: int, dto: ItemUpdateDTO) -> ItemDTO | None:
         """Update an existing item"""
         # Get the current item
         current_item = await self.repository.get_by_id(item_id)

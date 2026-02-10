@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from app.tags.application.dtos.tag_dto import TagCreateDTO, TagDTO, TagUpdateDTO
 from app.tags.domain.entities.tag import Tag
 from app.tags.domain.interfaces.tag_repository import TagRepositoryInterface
@@ -29,7 +27,7 @@ class GetTagUseCase:
     def __init__(self, repository: TagRepositoryInterface):
         self.repository = repository
 
-    async def execute(self, tag_id: int) -> Optional[TagDTO]:
+    async def execute(self, tag_id: int) -> TagDTO | None:
         """Execute the get tag use case"""
         tag = await self.repository.get_by_id(tag_id)
         return TagDTO.model_validate(tag) if tag else None
@@ -41,7 +39,7 @@ class GetAllTagsUseCase:
     def __init__(self, repository: TagRepositoryInterface):
         self.repository = repository
 
-    async def execute(self, skip: int = 0, limit: int = 100) -> List[TagDTO]:
+    async def execute(self, skip: int = 0, limit: int = 100) -> list[TagDTO]:
         """Execute the get all tags use case"""
         tags = await self.repository.get_all(skip=skip, limit=limit)
         return [TagDTO.model_validate(tag) for tag in tags]
@@ -53,7 +51,7 @@ class UpdateTagUseCase:
     def __init__(self, repository: TagRepositoryInterface):
         self.repository = repository
 
-    async def execute(self, tag_id: int, tag_dto: TagUpdateDTO) -> Optional[TagDTO]:
+    async def execute(self, tag_id: int, tag_dto: TagUpdateDTO) -> TagDTO | None:
         """Execute the update tag use case"""
         # Check if tag exists
         existing_tag = await self.repository.get_by_id(tag_id)

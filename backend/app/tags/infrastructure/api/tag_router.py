@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -22,7 +20,7 @@ def get_tag_repository(db: Session = Depends(get_db)) -> TagRepositoryImpl:
     return TagRepositoryImpl(db)
 
 
-@router.get("/", response_model=List[TagDTO])
+@router.get("/", response_model=list[TagDTO])
 async def get_tags(
     skip: int = 0,
     limit: int = 100,

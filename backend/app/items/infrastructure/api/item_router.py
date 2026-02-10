@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -22,7 +20,7 @@ def get_item_repository(db: Session = Depends(get_db)) -> ItemRepositoryImpl:
     return ItemRepositoryImpl(db)
 
 
-@router.get("/", response_model=List[ItemDTO])
+@router.get("/", response_model=list[ItemDTO])
 async def get_items(
     skip: int = 0,
     limit: int = 100,

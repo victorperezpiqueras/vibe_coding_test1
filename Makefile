@@ -1,4 +1,12 @@
-.PHONY: help install install-frontend install-backend dev frontend backend lint format test clean precommit
+.PHONY: \
+	help install install-backend install-frontend precommit-install \
+	dev backend frontend \
+	lint lint-backend lint-frontend \
+	format format-backend format-frontend \
+	test test-backend test-frontend \
+	precommit-run precommit-run-modified \
+	build build-backend build-frontend \
+	check clean
 
 # Color output
 BLUE := \033[0;34m
@@ -37,7 +45,7 @@ dev: ## Run both frontend and backend in development mode
 
 backend: ## Run backend server with auto-reload
 	@echo "$(YELLOW)Starting backend server...$(NC)"
-	cd backend && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	cd backend && poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 frontend: ## Run frontend development server
 	@echo "$(YELLOW)Starting frontend dev server...$(NC)"
@@ -49,7 +57,7 @@ lint: ## Run linting checks on both frontend and backend
 
 lint-backend: ## Lint backend code
 	@echo "$(YELLOW)Linting backend code...$(NC)"
-	cd backend && pylint app/ --disable=all --enable=E,F || true
+	cd backend && poetry run ruff check app/ || true
 
 lint-frontend: ## Lint frontend code
 	@echo "$(YELLOW)Linting frontend code...$(NC)"
@@ -61,7 +69,7 @@ format: ## Format code in frontend and backend
 
 format-backend: ## Format backend code with black
 	@echo "$(YELLOW)Formatting backend code...$(NC)"
-	cd backend && black app/ || true
+	cd backend && poetry run ruff format app/ || true
 
 format-frontend: ## Format frontend code with prettier
 	@echo "$(YELLOW)Formatting frontend code...$(NC)"

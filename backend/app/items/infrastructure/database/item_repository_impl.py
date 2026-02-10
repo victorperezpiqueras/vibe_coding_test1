@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from sqlalchemy.orm import Session
 
 from app.items.domain.entities.item import Item
@@ -14,17 +12,17 @@ class ItemRepositoryImpl(ItemRepository):
     def __init__(self, db: Session):
         self.db = db
 
-    async def get_by_id(self, item_id: int) -> Optional[ItemORM]:
+    async def get_by_id(self, item_id: int) -> ItemORM | None:
         """Get an item by ID - returns ORM for tags support"""
         orm_item = self.db.query(ItemORM).filter(ItemORM.id == item_id).first()
         return orm_item
 
-    async def get_all(self, skip: int = 0, limit: int = 100) -> List[ItemORM]:
+    async def get_all(self, skip: int = 0, limit: int = 100) -> list[ItemORM]:
         """Get all items with pagination - returns ORM for tags support"""
         orm_items = self.db.query(ItemORM).offset(skip).limit(limit).all()
         return orm_items
 
-    async def create(self, item: Item, tag_ids: Optional[List[int]] = None) -> ItemORM:
+    async def create(self, item: Item, tag_ids: list[int] | None = None) -> ItemORM:
         """Create a new item - returns ORM for tags support"""
         orm_item = ItemORM(
             name=item.name,
@@ -42,8 +40,8 @@ class ItemRepositoryImpl(ItemRepository):
         return orm_item
 
     async def update(
-        self, item_id: int, item: Item, tag_ids: Optional[List[int]] = None
-    ) -> Optional[ItemORM]:
+        self, item_id: int, item: Item, tag_ids: list[int] | None = None
+    ) -> ItemORM | None:
         """Update an existing item - returns ORM for tags support"""
         orm_item = self.db.query(ItemORM).filter(ItemORM.id == item_id).first()
         if orm_item is None:

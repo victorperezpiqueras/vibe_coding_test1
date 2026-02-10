@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -20,10 +19,10 @@ class ItemDTO(BaseModel):
 
     id: int
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     created_at: datetime
-    updated_at: Optional[datetime] = None
-    tags: List[TagInItemDTO] = []
+    updated_at: datetime | None = None
+    tags: list[TagInItemDTO] = []
 
     class Config:
         from_attributes = True
@@ -33,13 +32,13 @@ class ItemCreateDTO(BaseModel):
     """DTO for creating items"""
 
     name: str
-    description: Optional[str] = None
-    tag_ids: List[int] = []
+    description: str | None = None
+    tag_ids: list[int] = []
 
 
 class ItemUpdateDTO(BaseModel):
     """DTO for updating items"""
 
-    name: Optional[str] = None
-    description: Optional[str] = None
-    tag_ids: Optional[List[int]] = None
+    name: str | None = None
+    description: str | None = None
+    tag_ids: list[int] | None = None

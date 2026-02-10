@@ -4,16 +4,6 @@
 # Run all checks: pre-commit run --all-files
 
 repos:
-  # Python linting and formatting with Ruff
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.0
-    hooks:
-      - id: ruff
-        args: ["--fix"]
-        files: ^backend/
-      - id: ruff-format
-        files: ^backend/
-
   # General file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -27,6 +17,16 @@ repos:
         args: ["--maxkb=1000"]
       - id: mixed-line-ending
         args: ["--fix=lf"]
+
+  # Python linting and formatting with Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+        files: ^backend/
+      - id: ruff-format
+        files: ^backend/
 
   # JavaScript/TypeScript linting with ESLint
   - repo: local

@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -11,7 +10,7 @@ class TagDTO(BaseModel):
     name: str
     color: str = Field(..., pattern="^#[0-9A-Fa-f]{6}$")
     created_at: datetime
-    updated_at: Optional[datetime] = None
+    updated_at: datetime | None = None
 
     class Config:
         from_attributes = True
@@ -27,5 +26,5 @@ class TagCreateDTO(BaseModel):
 class TagUpdateDTO(BaseModel):
     """DTO for updating tags"""
 
-    name: Optional[str] = Field(None, min_length=1, max_length=50)
-    color: Optional[str] = Field(None, pattern="^#[0-9A-Fa-f]{6}$")
+    name: str | None = Field(None, min_length=1, max_length=50)
+    color: str | None = Field(None, pattern="^#[0-9A-Fa-f]{6}$")
