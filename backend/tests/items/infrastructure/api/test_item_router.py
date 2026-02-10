@@ -1,5 +1,6 @@
 """Unit tests for item router"""
-from unittest.mock import AsyncMock, patch
+
+from unittest.mock import AsyncMock
 
 import pytest
 from fastapi import HTTPException
@@ -234,4 +235,3 @@ class TestDeleteItemEndpoint:
 
         assert exc_info.value.status_code == 404
         assert exc_info.value.detail == "Item not found"
-

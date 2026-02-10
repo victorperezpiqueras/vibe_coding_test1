@@ -1,4 +1,5 @@
 """Unit tests for tag use cases"""
+
 from unittest.mock import AsyncMock
 
 import pytest

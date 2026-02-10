@@ -11,6 +11,7 @@
 3. Run unit tests for the step.
 4. Run e2e tests when the change affects user flows or UI behavior.
 5. Commit each step using conventional commit messages.
+6. Run `make precommit-run` to run pre-commit hooks. If errors appear, fix them. If errors are related to format or poetry lock, they usually do not appear again, so it is only required to do `git add .` and retry the commit again.
 
 ## Available skills
 

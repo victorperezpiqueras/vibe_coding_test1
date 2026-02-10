@@ -1,4 +1,5 @@
 """Unit tests for tag router"""
+
 from unittest.mock import AsyncMock
 
 import pytest

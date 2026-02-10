@@ -1,4 +1,5 @@
 """Fixtures for items application tests"""
+
 from datetime import datetime
 
 from app.items.application.dtos.item_dto import ItemCreateDTO, ItemDTO, ItemUpdateDTO

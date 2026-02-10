@@ -1,4 +1,5 @@
 """Fixtures for tags application tests"""
+
 from datetime import datetime
 
 from app.tags.application.dtos.tag_dto import TagCreateDTO, TagDTO, TagUpdateDTO
