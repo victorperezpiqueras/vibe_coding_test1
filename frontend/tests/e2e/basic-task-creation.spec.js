@@ -20,26 +20,29 @@ test.describe('Basic Task Creation', () => {
     // Fill in the task description
     await page.getByTestId('task-description-input').fill('This is a test task created by e2e test')
 
-    // Create a new tag by clicking the tag selector dropdown
-    await page.getByRole('combobox').click()
+    // Click "Add tags" button to open the tag selector
+    await page.getByTestId('toggle-tags-button').click()
 
-    // Click the "Create new tag" button in the dropdown
-    await page.getByText('Create new tag').click()
+    // Wait for the tag section to be visible
+    await expect(page.getByTestId('create-new-tag-button')).toBeVisible()
 
-    // Wait for tag creation dialog to appear
-    await expect(page.getByPlaceholderText('Tag name')).toBeVisible()
+    // Click "Create new tag" button
+    await page.getByTestId('create-new-tag-button').click()
 
-    // Fill in tag details
-    await page.getByPlaceholderText('Tag name').fill('E2E Test')
+    // Wait for tag creation form to appear
+    await expect(page.getByTestId('new-tag-name-input')).toBeVisible()
 
-    // Click the create tag button in the dialog
-    await page.getByRole('button', { name: 'Create' }).click()
+    // Fill in tag name
+    await page.getByTestId('new-tag-name-input').fill('E2E Test')
 
-    // Wait for the tag to be created and appear in the list
+    // Click the create tag submit button
+    await page.getByTestId('create-tag-submit-button').click()
+
+    // Wait for the tag to be created and the form to close
     await page.waitForTimeout(500)
 
-    // Select the newly created tag
-    await page.getByRole('combobox').click()
+    // The tag should now appear in the unselected tags list
+    // Click on the tag to select it
     await page.getByText('E2E Test').click()
 
     // Submit the task creation form
