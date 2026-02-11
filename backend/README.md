@@ -46,42 +46,15 @@ For detailed architecture guidelines, see [.github/backend-architecture.instruct
 
 ### Installation
 
-#### Using Makefile (Recommended)
-
 From the project root directory:
 
 ```bash
-make install-backend           # Install production dependencies
-make install-backend-dev       # Install development dependencies
-make install-backend-poetry    # Install using poetry (for development)
+make install-backend
 ```
 
-#### Manual Installation
-
-1. Create a virtual environment:
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-2. Install dependencies:
-
-**Using poetry:**
-
-```bash
-poetry install
-```
-
-Install the poetry export plugin:
-
-```bash
-poetry self add poetry-plugin-export
-```
+This installs all dependencies and required Poetry plugins.
 
 ### Running the Server
-
-#### Using Makefile (Recommended)
 
 From the project root directory:
 
@@ -89,19 +62,12 @@ From the project root directory:
 make backend
 ```
 
-#### Manual Start
-
-Start the development server:
-
-```bash
-uvicorn app.main:app --reload
-```
-
 The API will be available at:
-
 - API: <http://localhost:8000>
 - Swagger UI: <http://localhost:8000/docs>
 - ReDoc: <http://localhost:8000/redoc>
+
+For manual setup without Make, see the commands in the [Makefile](../Makefile).
 
 ### Database
 
@@ -113,28 +79,24 @@ in the backend directory when you first run the application.
 ### Linting
 
 ```bash
-make lint-backend       # Lint with pylint
-make lint-backend-ruff  # Lint with ruff
+make lint-backend       # Lint with ruff
 ```
 
 ### Formatting
 
 ```bash
-make format-backend        # Format with black
-make format-backend-check  # Check formatting with ruff
+make format-backend     # Format with ruff
 ```
 
 ### Testing
 
 The backend includes comprehensive unit tests for use cases and API endpoints.
 
-#### Running Tests
-
 ```bash
 make test-backend  # Run all backend tests
 ```
 
-Or using pytest directly:
+For more granular test runs, use pytest directly from the backend directory:
 
 ```bash
 cd backend
