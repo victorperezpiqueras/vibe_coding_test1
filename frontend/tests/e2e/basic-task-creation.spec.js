@@ -6,7 +6,7 @@ test.describe('Basic Task Creation', () => {
     const timestamp = Date.now()
     const uniqueTaskName = `Test-Task-${timestamp}`
     const uniqueTagName = `E2E-Tag-${timestamp}`
-    
+
     // Navigate to the application
     await page.goto('/')
 

@@ -94,18 +94,42 @@ The backend includes comprehensive unit tests for use cases and API endpoints.
 
 ```bash
 make test-backend  # Run all backend tests
+make test-backend-coverage  # Run tests with coverage report
 ```
 
 For more granular test runs, use pytest directly from the backend directory:
 
 ```bash
 cd backend
-pytest                    # Run all tests
-pytest tests/items/       # Run only items tests
-pytest tests/tags/        # Run only tags tests
-pytest -v                 # Verbose output
-pytest -k "test_create"   # Run tests matching pattern
+pytest                          # Run all tests (without coverage)
+pytest --cov=app                # Run tests with coverage
+pytest tests/items/             # Run only items tests
+pytest tests/tags/              # Run only tags tests
+pytest -v                       # Verbose output
+pytest -k "test_create"         # Run tests matching pattern
 ```
+
+#### Test Coverage
+
+The project uses `pytest-cov` to track test coverage. Coverage is measured when running the `make test-backend-coverage` command or by using pytest with the `--cov` flag.
+
+Coverage reports generate:
+- Terminal output showing coverage percentage and missing lines
+- HTML report in `backend/htmlcov/` directory
+- XML report for CI/CD integration
+
+To view the HTML coverage report after running tests with coverage:
+```bash
+cd backend
+# Run tests to generate coverage report
+make test-backend-coverage
+# Open the HTML report
+open htmlcov/index.html  # macOS
+xdg-open htmlcov/index.html  # Linux
+start htmlcov/index.html  # Windows
+```
+
+Coverage reports are also uploaded to Codecov in the CI pipeline, with a badge displayed in the main README.
 
 #### Test Structure
 
@@ -131,10 +155,11 @@ tests/
             └── test_tag_router.py
 ```
 
-#### Test Coverage
+#### Test Types
 
 - **Use Case Tests**: Mock repositories to test business logic in isolation
 - **API Tests**: Mock use cases to test HTTP endpoints and status codes
+- **Integration Tests**: Test repository implementations with real database
 - **Total**: 45 tests covering all CRUD operations for Items and Tags
 
 
