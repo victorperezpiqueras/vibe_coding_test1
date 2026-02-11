@@ -88,6 +88,10 @@ test-backend: ## Run backend tests
 	@echo "$(YELLOW)Running backend tests...$(NC)"
 	cd backend && pytest . || true
 
+test-backend-coverage: ## Run backend tests with coverage report
+	@echo "$(YELLOW)Running backend tests with coverage...$(NC)"
+	cd backend && pytest . --cov=app --cov-report=term-missing --cov-report=xml --cov-report=html
+
 test-frontend: ## Run frontend tests
 	@echo "$(YELLOW)Running frontend tests...$(NC)"
 	cd frontend && npm run test || true

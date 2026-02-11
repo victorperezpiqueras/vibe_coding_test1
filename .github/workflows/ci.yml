@@ -48,8 +48,17 @@ jobs:
       - name: Set up Python
         uses: ./.github/actions/setup-backend
 
-      - name: Run tests
-        run: make test-backend
+      - name: Run tests with coverage
+        run: make test-backend-coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   frontend-lint:
     name: Frontend - Lint
