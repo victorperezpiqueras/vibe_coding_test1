@@ -28,6 +28,13 @@ Before running E2E tests, ensure:
 
 ## Running Tests
 
+### Run E2E tests in CI mode (using Make)
+```bash
+# From the repository root
+make test-e2e-ci
+```
+This command runs E2E tests using Chromium only, which is the configuration used in CI/CD pipelines.
+
 ### Run all E2E tests
 ```bash
 npm run test:e2e
@@ -45,7 +52,7 @@ npm run test:e2e:debug
 
 ### Run specific test file
 ```bash
-npx playwright test tests/e2e/items.spec.js
+npx playwright test tests/e2e/basic-task-creation.spec.js
 ```
 
 ### Run tests on specific browser
@@ -64,7 +71,12 @@ npm run test:e2e:report
 
 ### E2E Tests
 
-Currently, the E2E tests have been removed. A commented template is available in `example.spec.js` for future test development.
+- **basic-task-creation.spec.js**: Tests the core functionality of creating a task with a label in a column. This test verifies:
+  - Creating a new task with name and description
+  - Creating a new tag/label
+  - Associating the tag with the task
+  - Verifying the task appears in the To Do column
+  - Verifying the tag is displayed on the task
 
 ## Test Configuration
 

@@ -196,7 +196,14 @@ Run tests:
 make test              # Run all tests
 make test-frontend     # Run frontend tests only
 make test-backend      # Run backend tests only
-make test-e2e          # Run E2E tests
+make test-e2e-ci       # Run E2E tests in CI mode (requires backend to be running)
+```
+
+**Note**: For E2E tests, ensure the backend is running on port 8000 before executing `make test-e2e-ci`.
+To run the backend:
+```bash
+cd backend
+poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 ### Building for Production

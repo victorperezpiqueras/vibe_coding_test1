@@ -110,7 +110,9 @@ function App() {
       throw new Error('Failed to create tag')
     }
 
+    const newTag = await response.json()
     await fetchTags()
+    return newTag
   }
 
   // Delete an item

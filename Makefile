@@ -3,7 +3,7 @@
 	dev backend frontend \
 	lint lint-backend lint-frontend \
 	format format-backend format-frontend \
-	test test-backend test-frontend \
+	test test-backend test-frontend test-e2e-ci \
 	precommit-run precommit-run-modified \
 	build build-backend build-frontend \
 	check clean
@@ -91,6 +91,10 @@ test-backend: ## Run backend tests
 test-frontend: ## Run frontend tests
 	@echo "$(YELLOW)Running frontend tests...$(NC)"
 	cd frontend && npm run test || true
+
+test-e2e-ci: ## Run E2E tests in CI mode (requires backend running)
+	@echo "$(YELLOW)Running E2E tests in CI mode...$(NC)"
+	cd frontend && npm run test:e2e -- --project=chromium
 
 precommit-run: ## Run pre-commit checks on all files
 	@echo "$(YELLOW)Running pre-commit checks...$(NC)"

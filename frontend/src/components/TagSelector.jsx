@@ -37,7 +37,11 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
     if (!newTagName.trim()) return
 
     try {
-      await onCreateTag({ name: newTagName.trim(), color: newTagColor })
+      const newTag = await onCreateTag({ name: newTagName.trim(), color: newTagColor })
+      // Automatically select the newly created tag
+      if (newTag && newTag.id) {
+        onTagsChange([...selectedTagIds, newTag.id])
+      }
       setNewTagName('')
       setNewTagColor(DEFAULT_COLORS[0])
       setIsCreating(false)
