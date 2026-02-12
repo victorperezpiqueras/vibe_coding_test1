@@ -3,7 +3,7 @@
 	dev backend frontend \
 	lint lint-backend lint-frontend \
 	format format-backend format-frontend \
-	test test-backend test-frontend test-e2e-ci \
+	test test-backend test-frontend test-frontend-coverage test-e2e-ci \
 	precommit-run precommit-run-modified \
 	build build-backend build-frontend \
 	check clean
@@ -95,6 +95,10 @@ test-backend-coverage: ## Run backend tests with coverage report
 test-frontend: ## Run frontend tests
 	@echo "$(YELLOW)Running frontend tests...$(NC)"
 	cd frontend && npm run test || true
+
+test-frontend-coverage: ## Run frontend tests with coverage report
+	@echo "$(YELLOW)Running frontend tests with coverage...$(NC)"
+	cd frontend && npm run test:coverage -- --run
 
 test-e2e-ci: ## Run E2E tests in CI mode (requires backend running)
 	@echo "$(YELLOW)Running E2E tests in CI mode...$(NC)"

@@ -54,17 +54,38 @@ make format-frontend   # Format frontend code with prettier
 ### Testing
 
 ```bash
-make test-frontend     # Run unit tests
-make test-e2e-ci       # Run E2E tests (requires backend running)
+make test-frontend           # Run unit tests
+make test-frontend-coverage  # Run unit tests with coverage report
+make test-e2e-ci             # Run E2E tests (requires backend running)
 ```
 
 For more granular test runs, use npm scripts directly from the frontend directory:
 
 ```bash
 cd frontend
-npm run test           # Run unit tests
-npm run test:e2e       # Run E2E tests
+npm run test              # Run unit tests
+npm run test:coverage     # Run unit tests with coverage
+npm run test:e2e          # Run E2E tests
 ```
+
+#### Code Coverage
+
+The project uses Vitest with V8 coverage provider to track code coverage. Coverage reports are generated in multiple formats:
+
+- **Text**: Displayed in the terminal after running tests
+- **HTML**: Interactive report in `frontend/coverage/index.html`
+- **LCOV**: Machine-readable format for CI/CD integration (`frontend/coverage/lcov.info`)
+- **JSON**: Raw coverage data in `frontend/coverage/coverage-final.json`
+
+To view the HTML coverage report locally:
+
+```bash
+cd frontend
+npm run test:coverage
+# Open coverage/index.html in your browser
+```
+
+Coverage is automatically tracked in CI/CD and uploaded to Codecov for pull requests.
 
 ### Building for Production
 
