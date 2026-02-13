@@ -1,7 +1,8 @@
 # Vibe Coding Test - Monorepo
 
 [![CI](https://github.com/victorperezpiqueras/vibe_coding_test1/actions/workflows/ci.yml/badge.svg)](https://github.com/victorperezpiqueras/vibe_coding_test1/actions/workflows/ci.yml)
-[![backend-cov](https://codecov.io/gh/victorperezpiqueras/vibe_coding_test1/branch/main/graph/badge.svg?flag=backend)](https://codecov.io/gh/victorperezpiqueras/vibe_coding_test1)
+[![Backend Coverage](https://img.shields.io/codecov/c/github/victorperezpiqueras/vibe_coding_test1?flag=backend&label=backend-cov&labelColor=blue)](https://codecov.io/gh/victorperezpiqueras/vibe_coding_test1?flag=backend)
+[![Frontend Coverage](https://img.shields.io/codecov/c/github/victorperezpiqueras/vibe_coding_test1?flag=frontend&label=frontend-cov&labelColor=green)](https://codecov.io/gh/victorperezpiqueras/vibe_coding_test1?flag=frontend)
 
 A full-stack application with React frontend and FastAPI backend, using SQLite database and following Hexagonal Architecture principles.
 

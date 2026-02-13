@@ -1,0 +1,29 @@
+coverage:
+  status:
+    project:
+      default: false
+      backend:
+        target: auto
+        threshold: 0%
+        flags:
+          - backend
+      frontend:
+        target: auto
+        threshold: 0%
+        flags:
+          - frontend
+
+flags:
+  backend:
+    paths:
+      - backend/
+    carryforward: true
+  frontend:
+    paths:
+      - frontend/
+    carryforward: true
+
+comment:
+  layout: "diff, flags, files"
+  behavior: default
+  require_changes: false
