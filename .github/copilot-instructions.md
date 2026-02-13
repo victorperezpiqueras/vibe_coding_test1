@@ -18,3 +18,4 @@
 - [conventional-commits](skills/conventional-commits/SKILL.md)
 - [playwright-cli](skills/playwright-cli/SKILL.md)
 - [pull-request-definition](skills/pull-request-definition/SKILL.md)
+- [create-github-issue](skills/create-github-issue/SKILL.md)
