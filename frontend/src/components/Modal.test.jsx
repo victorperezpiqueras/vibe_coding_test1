@@ -70,8 +70,9 @@ describe('Modal', () => {
       </Modal>
     )
 
-    const backdrop = screen.getByRole('dialog').parentElement
-    await user.click(backdrop)
+    const backdrop = screen.getByRole('dialog')
+    // Click on the backdrop (the outer div with role=dialog)
+    await user.click(backdrop, { position: { x: 5, y: 5 } })
 
     expect(mockOnClose).toHaveBeenCalledTimes(1)
   })

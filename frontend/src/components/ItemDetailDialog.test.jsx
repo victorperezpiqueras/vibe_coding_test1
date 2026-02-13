@@ -202,9 +202,9 @@ describe('ItemDetailDialog', () => {
   })
 
   it('trims whitespace from name and description before saving', async () => {
-    const user = userEvent.setup()
+    const user = userEvent.setup({ delay: null })
     const onSave = vi.fn().mockResolvedValue()
-    render(<ItemDetailDialog {...defaultProps} />)
+    render(<ItemDetailDialog {...defaultProps} onSave={onSave} />)
 
     const nameInput = screen.getByTestId('item-detail-name')
     const descriptionInput = screen.getByTestId('item-detail-description')
