@@ -116,6 +116,13 @@ fix(ui): fix the bug in dashboard component on line 45
    )"
    ```
 
+5. **(if commit failed due to precommit hook)**
+
+   ```bash
+   git add <changed-files>
+   git commit ...
+   ```
+
 ---
 
 ## Decision Tree
@@ -165,8 +172,7 @@ git commit --amend --no-edit
 
 # Amend with new message
 git commit --amend -m "new message"
+
+# if precommit is not setup, run checks:
+make precommit-run-modified
 ```
-
-## After Commit
-
-Run `make precommit-run-modified` to execute pre-commit hooks on the committed files, ensuring code quality and formatting standards are maintained.
