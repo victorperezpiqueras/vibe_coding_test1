@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Tag from './components/Tag'
 import TagSelector from './components/TagSelector'
+import ItemDetailDialog from './components/ItemDetailDialog'
 
 const API_URL = 'http://localhost:8000'
 const STORAGE_KEY = 'taskStatusMap'
@@ -18,6 +19,8 @@ function App() {
   const [selectedTagIds, setSelectedTagIds] = useState([])
   const [showTaskForm, setShowTaskForm] = useState(false)
   const [apiStatus, setApiStatus] = useState('checking...')
+  const [selectedItem, setSelectedItem] = useState(null)
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false)
   const [statusMap, setStatusMap] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
@@ -131,6 +134,44 @@ function App() {
     } catch (error) {
       console.error('Error deleting item:', error)
     }
+  }
+
+  // Update an item
+  const updateItem = async (itemData) => {
+    try {
+      const response = await fetch(`${API_URL}/items/${itemData.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: itemData.name,
+          description: itemData.description,
+          tag_ids: itemData.tag_ids,
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update item')
+      }
+
+      await fetchItems()
+    } catch (error) {
+      console.error('Error updating item:', error)
+      throw error
+    }
+  }
+
+  // Handle item click to open detail dialog
+  const handleItemClick = (item) => {
+    setSelectedItem(item)
+    setIsDetailDialogOpen(true)
+  }
+
+  // Handle detail dialog close
+  const handleDetailDialogClose = () => {
+    setIsDetailDialogOpen(false)
+    setSelectedItem(null)
   }
 
   // Persist status map
@@ -267,9 +308,10 @@ function App() {
                     <article
                       key={item.id}
                       data-testid={`task-${item.id}`}
-                      className="group rounded-lg border border-slate-200 bg-white p-3 shadow-sm hover:shadow-md cursor-grab"
+                      className="group rounded-lg border border-slate-200 bg-white p-3 shadow-sm hover:shadow-md cursor-pointer"
                       draggable
                       onDragStart={(e) => onDragStart(e, item)}
+                      onClick={() => handleItemClick(item)}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
@@ -287,7 +329,10 @@ function App() {
                         </div>
                         <button
                           data-testid={`delete-task-${item.id}`}
-                          onClick={() => deleteItem(item.id)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            deleteItem(item.id)
+                          }}
                           className="opacity-0 group-hover:opacity-100 rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300"
                         >
                           Delete
@@ -308,6 +353,16 @@ function App() {
           Backend: <a className="underline hover:text-slate-700" href="http://localhost:8000/docs" target="_blank">localhost:8000/docs</a>
         </div>
       </footer>
+
+      {/* Item Detail Dialog */}
+      <ItemDetailDialog
+        item={selectedItem}
+        isOpen={isDetailDialogOpen}
+        onClose={handleDetailDialogClose}
+        onSave={updateItem}
+        availableTags={tags}
+        onCreateTag={createTag}
+      />
     </div>
   )
 }
