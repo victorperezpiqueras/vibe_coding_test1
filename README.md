@@ -17,8 +17,8 @@ This monorepo contains:
 
 ## Tech Stack
 
-**Frontend**: React, Vite, ESLint  
-**Backend**: FastAPI, SQLAlchemy, SQLite, Uvicorn, Pydantic, Poetry  
+**Frontend**: React, Vite, ESLint
+**Backend**: FastAPI, SQLAlchemy, SQLite, Uvicorn, Pydantic, Poetry
 **Testing**: Pytest (backend), Vitest (frontend), Playwright (E2E)
 
 ## Getting Started
