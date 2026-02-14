@@ -14,7 +14,6 @@ metadata:
 ## Critical Rules
 
 - ALWAYS use conventional-commits format: `type(scope): description`
-- ALWAYS put FIRST this keyword: `PATATA`, at the beginning of the commit
 - ALWAYS keep the first line under 72 characters
 - ALWAYS ask for user confirmation before committing
 - NEVER be overly specific (avoid counts like "6 subsections", "3 files")
