@@ -1,24 +1,25 @@
 import { useEffect, useMemo, useState } from 'react'
 import Tag from './components/Tag'
 import TagSelector from './components/TagSelector'
+import type { Column, ColumnKey, Item, StatusMap, Tag as TagType, TagCreateData } from './types'
 
 const API_URL = 'http://localhost:8000'
 const STORAGE_KEY = 'taskStatusMap'
-const COLUMNS = [
+const COLUMNS: Column[] = [
   { key: 'todo', title: 'To Do' },
   { key: 'inprogress', title: 'In Progress' },
   { key: 'done', title: 'Done' },
 ]
 
 function App() {
-  const [items, setItems] = useState([])
-  const [tags, setTags] = useState([])
+  const [items, setItems] = useState<Item[]>([])
+  const [tags, setTags] = useState<TagType[]>([])
   const [newItemName, setNewItemName] = useState('')
   const [newItemDescription, setNewItemDescription] = useState('')
-  const [selectedTagIds, setSelectedTagIds] = useState([])
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
   const [showTaskForm, setShowTaskForm] = useState(false)
-  const [apiStatus, setApiStatus] = useState('checking...')
-  const [statusMap, setStatusMap] = useState(() => {
+  const [apiStatus, setApiStatus] = useState<string>('checking...')
+  const [statusMap, setStatusMap] = useState<StatusMap>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       return raw ? JSON.parse(raw) : {}
@@ -31,7 +32,7 @@ function App() {
   useEffect(() => {
     fetch(`${API_URL}/health`)
       .then(res => res.json())
-      .then(data => setApiStatus(data.status))
+      .then((data: { status: string }) => setApiStatus(data.status))
       .catch(() => setApiStatus('disconnected'))
   }, [])
 
@@ -39,7 +40,7 @@ function App() {
   const fetchItems = async () => {
     try {
       const response = await fetch(`${API_URL}/items/`)
-      const data = await response.json()
+      const data: Item[] = await response.json()
       setItems(data)
     } catch (error) {
       console.error('Error fetching items:', error)
@@ -50,7 +51,7 @@ function App() {
   const fetchTags = async () => {
     try {
       const response = await fetch(`${API_URL}/tags/`)
-      const data = await response.json()
+      const data: TagType[] = await response.json()
       setTags(data)
     } catch (error) {
       console.error('Error fetching tags:', error)
@@ -67,7 +68,7 @@ function App() {
   }, [])
 
   // Create a new item
-  const createItem = async (e) => {
+  const createItem = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!newItemName.trim()) return
 
@@ -97,7 +98,7 @@ function App() {
   }
 
   // Create a new tag
-  const createTag = async (tagData) => {
+  const createTag = async (tagData: TagCreateData): Promise<TagType> => {
     const response = await fetch(`${API_URL}/tags/`, {
       method: 'POST',
       headers: {
@@ -110,13 +111,13 @@ function App() {
       throw new Error('Failed to create tag')
     }
 
-    const newTag = await response.json()
+    const newTag: TagType = await response.json()
     await fetchTags()
     return newTag
   }
 
   // Delete an item
-  const deleteItem = async (itemId) => {
+  const deleteItem = async (itemId: number) => {
     try {
       await fetch(`${API_URL}/items/${itemId}`, {
         method: 'DELETE'
@@ -146,7 +147,7 @@ function App() {
 
   // Derived columns
   const columnsData = useMemo(() => {
-    const byCol = {
+    const byCol: Record<ColumnKey, Item[]> = {
       todo: [],
       inprogress: [],
       done: [],
@@ -159,18 +160,18 @@ function App() {
   }, [items, statusMap])
 
   // Drag & drop handlers
-  const onDragStart = (e, item) => {
+  const onDragStart = (e: React.DragEvent<HTMLElement>, item: Item) => {
     e.dataTransfer.setData('text/plain', String(item.id))
   }
 
-  const onDrop = (e, columnKey) => {
+  const onDrop = (e: React.DragEvent<HTMLElement>, columnKey: ColumnKey) => {
     const idStr = e.dataTransfer.getData('text/plain')
     if (!idStr) return
     const id = Number(idStr)
     setStatusMap(prev => ({ ...prev, [id]: columnKey }))
   }
 
-  const allowDrop = (e) => e.preventDefault()
+  const allowDrop = (e: React.DragEvent<HTMLElement>) => e.preventDefault()
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -249,21 +250,23 @@ function App() {
       {/* Board */}
       <main className="mx-auto max-w-7xl w-full px-6 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {COLUMNS.map(col => (
+          {COLUMNS.map(col => {
+            const columnKey = col.key as ColumnKey
+            return (
             <div key={col.key} data-testid={`column-${col.key}`} className="rounded-xl border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
                 <h2 className="text-sm font-semibold text-slate-700">{col.title}</h2>
-                <span className="text-xs text-slate-500">{columnsData[col.key].length}</span>
+                <span className="text-xs text-slate-500">{columnsData[columnKey].length}</span>
               </div>
               <div
                 className="p-3 space-y-3 min-h-40 max-h-[60vh] overflow-y-auto scrollbar-thin"
                 onDragOver={allowDrop}
-                onDrop={(e) => onDrop(e, col.key)}
+                onDrop={(e) => onDrop(e, columnKey)}
               >
-                {columnsData[col.key].length === 0 ? (
+                {columnsData[columnKey].length === 0 ? (
                   <div className="text-xs text-slate-400 py-6 text-center">Drag tasks here</div>
                 ) : (
-                  columnsData[col.key].map(item => (
+                  columnsData[columnKey].map(item => (
                     <article
                       key={item.id}
                       data-testid={`task-${item.id}`}
@@ -298,7 +301,7 @@ function App() {
                 )}
               </div>
             </div>
-          ))}
+          )})}
         </div>
       </main>
 

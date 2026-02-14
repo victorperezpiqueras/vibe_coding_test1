@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Tag from './Tag'
+import type { Tag as TagType, TagCreateData } from '../types'
 
 const DEFAULT_COLORS = [
   '#EF4444', // red
@@ -12,19 +13,26 @@ const DEFAULT_COLORS = [
   '#6B7280', // gray
 ]
 
+interface TagSelectorProps {
+  availableTags: TagType[]
+  selectedTagIds: number[]
+  onTagsChange: (tagIds: number[]) => void
+  onCreateTag: (tagData: TagCreateData) => Promise<TagType>
+}
+
 /**
  * TagSelector component for selecting and creating tags
  */
-function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag }) {
+function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag }: TagSelectorProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [newTagName, setNewTagName] = useState('')
-  const [newTagColor, setNewTagColor] = useState(DEFAULT_COLORS[0])
+  const [newTagColor, setNewTagColor] = useState(DEFAULT_COLORS[0]!)
 
   const selectedTags = availableTags.filter(tag => selectedTagIds.includes(tag.id))
   const unselectedTags = availableTags.filter(tag => !selectedTagIds.includes(tag.id))
 
-  const handleToggleTag = (tagId) => {
+  const handleToggleTag = (tagId: number) => {
     if (selectedTagIds.includes(tagId)) {
       onTagsChange(selectedTagIds.filter(id => id !== tagId))
     } else {
@@ -32,7 +40,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
     }
   }
 
-  const handleCreateTag = async (e) => {
+  const handleCreateTag = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newTagName.trim()) return
 
@@ -43,7 +51,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
         onTagsChange([...selectedTagIds, newTag.id])
       }
       setNewTagName('')
-      setNewTagColor(DEFAULT_COLORS[0])
+      setNewTagColor(DEFAULT_COLORS[0]!)
       setIsCreating(false)
     } catch (error) {
       console.error('Error creating tag:', error)
@@ -163,7 +171,7 @@ function TagSelector({ availableTags, selectedTagIds, onTagsChange, onCreateTag 
                   onClick={() => {
                     setIsCreating(false)
                     setNewTagName('')
-                    setNewTagColor(DEFAULT_COLORS[0])
+                    setNewTagColor(DEFAULT_COLORS[0]!)
                   }}
                   className="rounded-md bg-slate-200 text-slate-700 px-3 py-1 text-xs hover:bg-slate-300"
                 >

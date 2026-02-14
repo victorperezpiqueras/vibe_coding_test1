@@ -165,7 +165,7 @@ describe('TagSelector', () => {
 
   it('does not create tag with empty name', async () => {
     const user = userEvent.setup()
-    const onCreateTag = vi.fn().mockResolvedValue()
+    const onCreateTag = vi.fn().mockResolvedValue({ id: 100, name: '', color: '#000000' })
     render(<TagSelector {...defaultProps} onCreateTag={onCreateTag} />)
 
     await user.click(screen.getByRole('button', { name: /add tags/i }))

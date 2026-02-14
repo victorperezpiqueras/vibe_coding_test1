@@ -5,17 +5,18 @@ import App from './App'
 
 // Mock fetch globally
 const mockFetch = vi.fn()
-global.fetch = mockFetch
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+;(globalThis as any).fetch = mockFetch
 
 // Mock localStorage
 const localStorageMock = (() => {
-  let store = {}
+  let store: Record<string, string> = {}
   return {
-    getItem: vi.fn((key) => store[key] || null),
-    setItem: vi.fn((key, value) => {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => {
       store[key] = value.toString()
     }),
-    removeItem: vi.fn((key) => {
+    removeItem: vi.fn((key: string) => {
       delete store[key]
     }),
     clear: vi.fn(() => {
@@ -24,7 +25,8 @@ const localStorageMock = (() => {
   }
 })()
 
-global.localStorage = localStorageMock
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+;(globalThis as any).localStorage = localStorageMock
 
 describe('App', () => {
   beforeEach(() => {
@@ -298,7 +300,8 @@ describe('App', () => {
 
     // Hover to reveal delete button
     const taskCard = screen.getByText('Task to Delete').closest('article')
-    const deleteButton = taskCard.querySelector('button')
+    const deleteButton = taskCard?.querySelector('button')
+    if (!deleteButton) throw new Error('Delete button not found')
 
     await user.click(deleteButton)
 
@@ -414,7 +417,8 @@ describe('App', () => {
 
     // Delete the task which triggers localStorage update (removes from statusMap)
     const taskCard = screen.getByText('Task 1').closest('article')
-    const deleteButton = taskCard.querySelector('button')
+    const deleteButton = taskCard?.querySelector('button')
+    if (!deleteButton) throw new Error('Delete button not found')
     const user = userEvent.setup()
     await user.click(deleteButton)
 
