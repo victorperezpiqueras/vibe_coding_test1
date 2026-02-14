@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Tag as TagType, TagCreateData, Item } from "../types";
 import TagSelector from "./TagSelector";
 
@@ -23,18 +23,17 @@ export default function TaskForm({
   mode = "create",
   initialData,
 }: TaskFormProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
-
-  // Pre-fill form when editing
-  useEffect(() => {
-    if (mode === "edit" && initialData) {
-      setName(initialData.name);
-      setDescription(initialData.description || "");
-      setSelectedTagIds(initialData.tags?.map((tag) => tag.id) || []);
-    }
-  }, [mode, initialData]);
+  const [name, setName] = useState(
+    mode === "edit" && initialData ? initialData.name : "",
+  );
+  const [description, setDescription] = useState(
+    mode === "edit" && initialData ? initialData.description || "" : "",
+  );
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>(
+    mode === "edit" && initialData
+      ? initialData.tags?.map((tag) => tag.id) || []
+      : [],
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

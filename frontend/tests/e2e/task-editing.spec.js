@@ -187,7 +187,8 @@ test.describe("Task Editing", () => {
     const editTagsArea = page.locator('label:has-text("Tags")').locator("..");
     await expect(editTagsArea.getByText(tagName)).toBeVisible();
 
-    // Add another tag
+    // Add another tag - first open the tag selector
+    await page.getByTestId("toggle-tags-button").click();
     await page.getByTestId("create-new-tag-button").click();
     await expect(page.getByTestId("new-tag-name-input")).toBeVisible();
     await page.getByTestId("new-tag-name-input").fill(secondTagName);
