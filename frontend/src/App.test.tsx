@@ -1,484 +1,501 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import userEvent from '@testing-library/user-event'
-import App from './App'
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import App from "./App";
 
 // Mock fetch globally
-const mockFetch = vi.fn()
+const mockFetch = vi.fn();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-;(globalThis as any).fetch = mockFetch
+(globalThis as any).fetch = mockFetch;
 
 // Mock localStorage
 const localStorageMock = (() => {
-  let store: Record<string, string> = {}
+  let store: Record<string, string> = {};
   return {
     getItem: vi.fn((key: string) => store[key] || null),
     setItem: vi.fn((key: string, value: string) => {
-      store[key] = value.toString()
+      store[key] = value.toString();
     }),
     removeItem: vi.fn((key: string) => {
-      delete store[key]
+      delete store[key];
     }),
     clear: vi.fn(() => {
-      store = {}
+      store = {};
     }),
-  }
-})()
+  };
+})();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-;(globalThis as any).localStorage = localStorageMock
+(globalThis as any).localStorage = localStorageMock;
 
-describe('App', () => {
+describe("App", () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-    localStorageMock.clear()
+    vi.clearAllMocks();
+    localStorageMock.clear();
 
     // Default mock responses
     mockFetch.mockImplementation((url) => {
-      if (url.includes('/health')) {
+      if (url.includes("/health")) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' }),
-        })
+          json: () => Promise.resolve({ status: "healthy" }),
+        });
       }
-      if (url.includes('/items/')) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve([]),
-        })
-      }
-      if (url.includes('/tags/')) {
+      if (url.includes("/items/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([]),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
-  })
+      if (url.includes("/tags/")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([]),
+        });
+      }
+      return Promise.reject(new Error("Not found"));
+    });
+  });
 
   afterEach(() => {
-    vi.restoreAllMocks()
-  })
+    vi.restoreAllMocks();
+  });
 
-  it('renders the Task Board header', () => {
-    render(<App />)
-    expect(screen.getByText('Task Board')).toBeInTheDocument()
-  })
+  it("renders the Task Board header", () => {
+    render(<App />);
+    expect(screen.getByText("Task Board")).toBeInTheDocument();
+  });
 
-  it('displays API status as healthy', async () => {
-    render(<App />)
+  it("displays API status as healthy", async () => {
+    render(<App />);
     await waitFor(() => {
-      expect(screen.getByText('healthy')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText("healthy")).toBeInTheDocument();
+    });
+  });
 
-  it('displays API status as disconnected when health check fails', async () => {
+  it("displays API status as disconnected when health check fails", async () => {
     mockFetch.mockImplementation((url) => {
-      if (url.includes('/health')) {
-        return Promise.reject(new Error('Network error'))
+      if (url.includes("/health")) {
+        return Promise.reject(new Error("Network error"));
       }
-      if (url.includes('/items/') || url.includes('/tags/')) {
+      if (url.includes("/items/") || url.includes("/tags/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([]),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
+      return Promise.reject(new Error("Not found"));
+    });
 
-    render(<App />)
+    render(<App />);
     await waitFor(() => {
-      expect(screen.getByText('disconnected')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText("disconnected")).toBeInTheDocument();
+    });
+  });
 
-  it('fetches items and tags on mount', async () => {
-    render(<App />)
+  it("fetches items and tags on mount", async () => {
+    render(<App />);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/health')
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/items/')
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/tags/')
-    })
-  })
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:8000/health");
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:8000/items/");
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:8000/tags/");
+    });
+  });
 
   it('shows "Add new task" button initially', () => {
-    render(<App />)
-    expect(screen.getByRole('button', { name: /add new task/i })).toBeInTheDocument()
-  })
+    render(<App />);
+    expect(
+      screen.getByRole("button", { name: /add new task/i }),
+    ).toBeInTheDocument();
+  });
 
   it('opens task form when "Add new task" is clicked', async () => {
-    const user = userEvent.setup()
-    render(<App />)
+    const user = userEvent.setup();
+    render(<App />);
 
-    const addButton = screen.getByRole('button', { name: /add new task/i })
-    await user.click(addButton)
+    const addButton = screen.getByRole("button", { name: /add new task/i });
+    await user.click(addButton);
 
-    expect(screen.getByPlaceholderText('Task name')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/description/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /create task/i })).toBeInTheDocument()
-  })
+    expect(screen.getByPlaceholderText("Enter task name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/description/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /create task/i }),
+    ).toBeInTheDocument();
+  });
 
-  it('closes task form when Cancel is clicked', async () => {
-    const user = userEvent.setup()
-    render(<App />)
+  it("closes task form when Cancel is clicked", async () => {
+    const user = userEvent.setup();
+    render(<App />);
 
-    await user.click(screen.getByRole('button', { name: /add new task/i }))
-    expect(screen.getByPlaceholderText('Task name')).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: /add new task/i }));
+    expect(screen.getByPlaceholderText("Enter task name")).toBeInTheDocument();
 
-    const cancelButton = screen.getByRole('button', { name: /cancel/i })
-    await user.click(cancelButton)
+    const cancelButton = screen.getByRole("button", { name: /cancel/i });
+    await user.click(cancelButton);
 
     await waitFor(() => {
-      expect(screen.queryByPlaceholderText('Task name')).not.toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /add new task/i })).toBeInTheDocument()
-    })
-  })
+      expect(
+        screen.queryByPlaceholderText("Enter task name"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /add new task/i }),
+      ).toBeInTheDocument();
+    });
+  });
 
-  it('creates a new task', async () => {
-    const user = userEvent.setup()
+  it("creates a new task", async () => {
+    const user = userEvent.setup();
     const mockItems = [
-      { id: 1, name: 'Test Task', description: 'Test Description', tags: [] },
-    ]
+      { id: 1, name: "Test Task", description: "Test Description", tags: [] },
+    ];
 
     mockFetch.mockImplementation((url, options) => {
-      if (url.includes('/health')) {
+      if (url.includes("/health")) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' }),
-        })
+          json: () => Promise.resolve({ status: "healthy" }),
+        });
       }
-      if (url.includes('/items/') && options?.method === 'POST') {
+      if (url.includes("/items/") && options?.method === "POST") {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockItems[0]),
-        })
+        });
       }
-      if (url.includes('/items/')) {
+      if (url.includes("/items/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockItems),
-        })
+        });
       }
-      if (url.includes('/tags/')) {
+      if (url.includes("/tags/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([]),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
+      return Promise.reject(new Error("Not found"));
+    });
 
-    render(<App />)
+    render(<App />);
 
-    await user.click(screen.getByRole('button', { name: /add new task/i }))
+    await user.click(screen.getByRole("button", { name: /add new task/i }));
 
-    const nameInput = screen.getByPlaceholderText('Task name')
-    await user.type(nameInput, 'Test Task')
+    const nameInput = screen.getByPlaceholderText("Enter task name");
+    await user.type(nameInput, "Test Task");
 
-    const descInput = screen.getByPlaceholderText(/description/i)
-    await user.type(descInput, 'Test Description')
+    const descInput = screen.getByPlaceholderText(/description/i);
+    await user.type(descInput, "Test Description");
 
-    const createButton = screen.getByRole('button', { name: /create task/i })
-    await user.click(createButton)
+    const createButton = screen.getByRole("button", { name: /create task/i });
+    await user.click(createButton);
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:8000/items/',
+        "http://localhost:8000/items/",
         expect.objectContaining({
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: 'Test Task',
-            description: 'Test Description',
+            name: "Test Task",
+            description: "Test Description",
             tag_ids: [],
           }),
-        })
-      )
-    })
-  })
+        }),
+      );
+    });
+  });
 
-  it('does not create task with empty name', async () => {
-    const user = userEvent.setup()
-    render(<App />)
+  it("does not create task with empty name", async () => {
+    const user = userEvent.setup();
+    render(<App />);
 
-    await user.click(screen.getByRole('button', { name: /add new task/i }))
+    await user.click(screen.getByRole("button", { name: /add new task/i }));
 
-    const createButton = screen.getByRole('button', { name: /create task/i })
-    await user.click(createButton)
+    const createButton = screen.getByRole("button", { name: /create task/i });
+    await user.click(createButton);
 
     // Should not make POST request
     const postCalls = mockFetch.mock.calls.filter(
-      call => call[1]?.method === 'POST'
-    )
-    expect(postCalls.length).toBe(0)
-  })
+      (call) => call[1]?.method === "POST",
+    );
+    expect(postCalls.length).toBe(0);
+  });
 
-  it('displays the three columns: To Do, In Progress, Done', () => {
-    render(<App />)
-    expect(screen.getByText('To Do')).toBeInTheDocument()
-    expect(screen.getByText('In Progress')).toBeInTheDocument()
-    expect(screen.getByText('Done')).toBeInTheDocument()
-  })
+  it("displays the three columns: To Do, In Progress, Done", () => {
+    render(<App />);
+    expect(screen.getByText("To Do")).toBeInTheDocument();
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
+    expect(screen.getByText("Done")).toBeInTheDocument();
+  });
 
-  it('renders items in To Do column by default', async () => {
+  it("renders items in To Do column by default", async () => {
     const mockItems = [
-      { id: 1, name: 'Task 1', description: 'Desc 1', tags: [] },
-      { id: 2, name: 'Task 2', description: 'Desc 2', tags: [] },
-    ]
+      { id: 1, name: "Task 1", description: "Desc 1", tags: [] },
+      { id: 2, name: "Task 2", description: "Desc 2", tags: [] },
+    ];
 
     mockFetch.mockImplementation((url) => {
-      if (url.includes('/health')) {
+      if (url.includes("/health")) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' }),
-        })
+          json: () => Promise.resolve({ status: "healthy" }),
+        });
       }
-      if (url.includes('/items/')) {
+      if (url.includes("/items/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockItems),
-        })
+        });
       }
-      if (url.includes('/tags/')) {
+      if (url.includes("/tags/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([]),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
+      return Promise.reject(new Error("Not found"));
+    });
 
-    render(<App />)
+    render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText('Task 1')).toBeInTheDocument()
-      expect(screen.getByText('Task 2')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText("Task 1")).toBeInTheDocument();
+      expect(screen.getByText("Task 2")).toBeInTheDocument();
+    });
+  });
 
-  it('deletes a task when delete button is clicked', async () => {
-    const user = userEvent.setup()
+  it("deletes a task when delete button is clicked", async () => {
+    const user = userEvent.setup();
     const mockItems = [
-      { id: 1, name: 'Task to Delete', description: 'Will be deleted', tags: [] },
-    ]
+      {
+        id: 1,
+        name: "Task to Delete",
+        description: "Will be deleted",
+        tags: [],
+      },
+    ];
 
-    let itemsData = [...mockItems]
+    let itemsData = [...mockItems];
 
     mockFetch.mockImplementation((url, options) => {
-      if (url.includes('/health')) {
+      if (url.includes("/health")) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' }),
-        })
+          json: () => Promise.resolve({ status: "healthy" }),
+        });
       }
-      if (url.includes('/items/1') && options?.method === 'DELETE') {
-        itemsData = []
-        return Promise.resolve({ ok: true })
+      if (url.includes("/items/1") && options?.method === "DELETE") {
+        itemsData = [];
+        return Promise.resolve({ ok: true });
       }
-      if (url.includes('/items/')) {
+      if (url.includes("/items/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(itemsData),
-        })
+        });
       }
-      if (url.includes('/tags/')) {
+      if (url.includes("/tags/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([]),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
+      return Promise.reject(new Error("Not found"));
+    });
 
-    render(<App />)
+    render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText('Task to Delete')).toBeInTheDocument()
-    })
+      expect(screen.getByText("Task to Delete")).toBeInTheDocument();
+    });
 
     // Hover to reveal delete button
-    const taskCard = screen.getByText('Task to Delete').closest('article')
-    const deleteButton = taskCard?.querySelector('button')
-    if (!deleteButton) throw new Error('Delete button not found')
+    const taskCard = screen.getByText("Task to Delete").closest("article");
+    const deleteButton = taskCard?.querySelector("button");
+    if (!deleteButton) throw new Error("Delete button not found");
 
-    await user.click(deleteButton)
+    await user.click(deleteButton);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:8000/items/1',
-        { method: 'DELETE' }
-      )
-    })
-  })
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:8000/items/1", {
+        method: "DELETE",
+      });
+    });
+  });
 
-  it('syncs data when Sync button is clicked', async () => {
-    const user = userEvent.setup()
-    render(<App />)
+  it("syncs data when Sync button is clicked", async () => {
+    const user = userEvent.setup();
+    render(<App />);
 
     // Wait for initial fetches
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled()
-    })
+      expect(mockFetch).toHaveBeenCalled();
+    });
 
-    vi.clearAllMocks()
+    vi.clearAllMocks();
 
-    const syncButton = screen.getByRole('button', { name: /sync/i })
-    await user.click(syncButton)
+    const syncButton = screen.getByRole("button", { name: /sync/i });
+    await user.click(syncButton);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/items/')
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:8000/tags/')
-    })
-  })
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:8000/items/");
+      expect(mockFetch).toHaveBeenCalledWith("http://localhost:8000/tags/");
+    });
+  });
 
-  it('renders tasks with tags', async () => {
+  it("renders tasks with tags", async () => {
     const mockTags = [
-      { id: 1, name: 'Bug', color: '#EF4444' },
-      { id: 2, name: 'Feature', color: '#22C55E' },
-    ]
+      { id: 1, name: "Bug", color: "#EF4444" },
+      { id: 2, name: "Feature", color: "#22C55E" },
+    ];
 
     const mockItems = [
       {
         id: 1,
-        name: 'Task with tags',
-        description: 'Has multiple tags',
+        name: "Task with tags",
+        description: "Has multiple tags",
         tags: mockTags,
       },
-    ]
+    ];
 
     mockFetch.mockImplementation((url) => {
-      if (url.includes('/health')) {
+      if (url.includes("/health")) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' }),
-        })
+          json: () => Promise.resolve({ status: "healthy" }),
+        });
       }
-      if (url.includes('/items/')) {
+      if (url.includes("/items/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockItems),
-        })
+        });
       }
-      if (url.includes('/tags/')) {
+      if (url.includes("/tags/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockTags),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
+      return Promise.reject(new Error("Not found"));
+    });
 
-    render(<App />)
+    render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText('Task with tags')).toBeInTheDocument()
-      expect(screen.getByText('Bug')).toBeInTheDocument()
-      expect(screen.getByText('Feature')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText("Task with tags")).toBeInTheDocument();
+      expect(screen.getByText("Bug")).toBeInTheDocument();
+      expect(screen.getByText("Feature")).toBeInTheDocument();
+    });
+  });
 
-  it('persists task status to localStorage', async () => {
+  it("persists task status to localStorage", async () => {
     const mockItems = [
-      { id: 1, name: 'Task 1', description: 'Desc', tags: [] },
-    ]
+      { id: 1, name: "Task 1", description: "Desc", tags: [] },
+    ];
 
     mockFetch.mockImplementation((url, options) => {
-      if (url.includes('/health')) {
+      if (url.includes("/health")) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' }),
-        })
+          json: () => Promise.resolve({ status: "healthy" }),
+        });
       }
-      if (url.includes('/items/1') && options?.method === 'DELETE') {
-        return Promise.resolve({ ok: true })
+      if (url.includes("/items/1") && options?.method === "DELETE") {
+        return Promise.resolve({ ok: true });
       }
-      if (url.includes('/items/')) {
+      if (url.includes("/items/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockItems),
-        })
+        });
       }
-      if (url.includes('/tags/')) {
+      if (url.includes("/tags/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([]),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
+      return Promise.reject(new Error("Not found"));
+    });
 
-    render(<App />)
+    render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText('Task 1')).toBeInTheDocument()
-    })
+      expect(screen.getByText("Task 1")).toBeInTheDocument();
+    });
 
     // Delete the task which triggers localStorage update (removes from statusMap)
-    const taskCard = screen.getByText('Task 1').closest('article')
-    const deleteButton = taskCard?.querySelector('button')
-    if (!deleteButton) throw new Error('Delete button not found')
-    const user = userEvent.setup()
-    await user.click(deleteButton)
+    const taskCard = screen.getByText("Task 1").closest("article");
+    const deleteButton = taskCard?.querySelector("button");
+    if (!deleteButton) throw new Error("Delete button not found");
+    const user = userEvent.setup();
+    await user.click(deleteButton);
 
     await waitFor(() => {
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'taskStatusMap',
-        expect.any(String)
-      )
-    })
-  })
+        "taskStatusMap",
+        expect.any(String),
+      );
+    });
+  });
 
-  it('loads task status from localStorage on mount', () => {
-    const savedStatus = { '1': 'done', '2': 'inprogress' }
-    localStorageMock.getItem.mockReturnValue(JSON.stringify(savedStatus))
+  it("loads task status from localStorage on mount", () => {
+    const savedStatus = { "1": "done", "2": "inprogress" };
+    localStorageMock.getItem.mockReturnValue(JSON.stringify(savedStatus));
 
     const mockItems = [
-      { id: 1, name: 'Done Task', description: 'Should be in done', tags: [] },
-      { id: 2, name: 'InProgress Task', description: 'Should be in progress', tags: [] },
-    ]
+      { id: 1, name: "Done Task", description: "Should be in done", tags: [] },
+      {
+        id: 2,
+        name: "InProgress Task",
+        description: "Should be in progress",
+        tags: [],
+      },
+    ];
 
     mockFetch.mockImplementation((url) => {
-      if (url.includes('/health')) {
+      if (url.includes("/health")) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ status: 'healthy' }),
-        })
+          json: () => Promise.resolve({ status: "healthy" }),
+        });
       }
-      if (url.includes('/items/')) {
+      if (url.includes("/items/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockItems),
-        })
+        });
       }
-      if (url.includes('/tags/')) {
+      if (url.includes("/tags/")) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve([]),
-        })
+        });
       }
-      return Promise.reject(new Error('Not found'))
-    })
+      return Promise.reject(new Error("Not found"));
+    });
 
-    render(<App />)
+    render(<App />);
 
-    expect(localStorageMock.getItem).toHaveBeenCalledWith('taskStatusMap')
-  })
+    expect(localStorageMock.getItem).toHaveBeenCalledWith("taskStatusMap");
+  });
 
-  it('handles localStorage errors gracefully', () => {
+  it("handles localStorage errors gracefully", () => {
     localStorageMock.getItem.mockImplementation(() => {
-      throw new Error('LocalStorage error')
-    })
+      throw new Error("LocalStorage error");
+    });
 
     // Should not throw
-    expect(() => render(<App />)).not.toThrow()
-  })
+    expect(() => render(<App />)).not.toThrow();
+  });
 
-  it('renders footer with backend API link', () => {
-    render(<App />)
-    const link = screen.getByRole('link', { name: /localhost:8000\/docs/i })
-    expect(link).toHaveAttribute('href', 'http://localhost:8000/docs')
-    expect(link).toHaveAttribute('target', '_blank')
-  })
-})
+  it("renders footer with backend API link", () => {
+    render(<App />);
+    const link = screen.getByRole("link", { name: /localhost:8000\/docs/i });
+    expect(link).toHaveAttribute("href", "http://localhost:8000/docs");
+    expect(link).toHaveAttribute("target", "_blank");
+  });
+});
