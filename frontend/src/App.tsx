@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import Dialog from './components/Dialog'
 import Tag from './components/Tag'
 import TagSelector from './components/TagSelector'
 import type { Column, ColumnKey, Item, StatusMap, Tag as TagType, TagCreateData } from './types'
@@ -17,7 +18,7 @@ function App() {
   const [newItemName, setNewItemName] = useState('')
   const [newItemDescription, setNewItemDescription] = useState('')
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
-  const [showTaskForm, setShowTaskForm] = useState(false)
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [apiStatus, setApiStatus] = useState<string>('checking...')
   const [statusMap, setStatusMap] = useState<StatusMap>(() => {
     try {
@@ -89,7 +90,7 @@ function App() {
         setNewItemName('')
         setNewItemDescription('')
         setSelectedTagIds([])
-        setShowTaskForm(false)
+        setIsCreateDialogOpen(false)
         fetchItems()
       }
     } catch (error) {
@@ -188,64 +189,91 @@ function App() {
 
       {/* Compose */}
       <section className="mx-auto max-w-7xl w-full px-6 py-6">
-        {!showTaskForm ? (
-          <button
-            data-testid="add-task-button"
-            onClick={() => setShowTaskForm(true)}
-            className="w-full rounded-md border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600 hover:border-slate-400 hover:bg-slate-100"
-          >
-            + Add new task
-          </button>
-        ) : (
-          <form onSubmit={createItem} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-            <div>
-              <input
-                data-testid="task-name-input"
-                type="text"
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                placeholder="Task name"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                autoFocus
-              />
-            </div>
-            <div>
-              <textarea
-                data-testid="task-description-input"
-                value={newItemDescription}
-                onChange={(e) => setNewItemDescription(e.target.value)}
-                placeholder="Description (optional)"
-                rows={2}
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
+        <button
+          data-testid="add-task-button"
+          onClick={() => setIsCreateDialogOpen(true)}
+          className="w-full rounded-md border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600 hover:border-slate-400 hover:bg-slate-100"
+        >
+          + Add new task
+        </button>
+      </section>
+
+      {/* Create Item Dialog */}
+      <Dialog
+        isOpen={isCreateDialogOpen}
+        onClose={() => {
+          setIsCreateDialogOpen(false)
+          setNewItemName('')
+          setNewItemDescription('')
+          setSelectedTagIds([])
+        }}
+        title="Create New Task"
+      >
+        <form onSubmit={createItem} className="space-y-4">
+          <div>
+            <label htmlFor="task-name" className="block text-sm font-medium text-slate-700 mb-1">
+              Task name
+            </label>
+            <input
+              id="task-name"
+              data-testid="task-name-input"
+              type="text"
+              value={newItemName}
+              onChange={(e) => setNewItemName(e.target.value)}
+              placeholder="Enter task name"
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              autoFocus
+            />
+          </div>
+          <div>
+            <label htmlFor="task-description" className="block text-sm font-medium text-slate-700 mb-1">
+              Description (optional)
+            </label>
+            <textarea
+              id="task-description"
+              data-testid="task-description-input"
+              value={newItemDescription}
+              onChange={(e) => setNewItemDescription(e.target.value)}
+              placeholder="Enter description"
+              rows={3}
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Tags
+            </label>
             <TagSelector
               availableTags={tags}
               selectedTagIds={selectedTagIds}
               onTagsChange={setSelectedTagIds}
               onCreateTag={createTag}
             />
-            <div className="flex gap-2">
-              <button data-testid="create-task-button" type="submit" className="rounded-md bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-500">
-                Create Task
-              </button>
-              <button
-                data-testid="cancel-task-button"
-                type="button"
-                onClick={() => {
-                  setShowTaskForm(false)
-                  setNewItemName('')
-                  setNewItemDescription('')
-                  setSelectedTagIds([])
-                }}
-                className="rounded-md bg-slate-200 text-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-300"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
-      </section>
+          </div>
+          <div className="flex gap-2 justify-end pt-2">
+            <button
+              data-testid="cancel-task-button"
+              type="button"
+              onClick={() => {
+                setIsCreateDialogOpen(false)
+                setNewItemName('')
+                setNewItemDescription('')
+                setSelectedTagIds([])
+              }}
+              className="rounded-md bg-slate-200 text-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-300"
+            >
+              Cancel
+            </button>
+            <button
+              data-testid="create-task-button"
+              type="submit"
+              className="rounded-md bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-500"
+            >
+              Create Task
+            </button>
+          </div>
+        </form>
+      </Dialog>
 
       {/* Board */}
       <main className="mx-auto max-w-7xl w-full px-6 pb-10">
