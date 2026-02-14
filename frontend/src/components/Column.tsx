@@ -1,24 +1,26 @@
-import type { Item, ColumnKey } from '../types'
-import TaskCard from './TaskCard'
+import type { Item, ColumnKey } from "../types";
+import TaskCard from "./TaskCard";
 
 interface ColumnProps {
-  columnKey: ColumnKey
-  title: string
-  items: Item[]
-  onDragStart: (e: React.DragEvent<HTMLElement>, item: Item) => void
-  onDrop: (e: React.DragEvent<HTMLElement>, columnKey: ColumnKey) => void
-  onDelete: (itemId: number) => void
+  columnKey: ColumnKey;
+  title: string;
+  items: Item[];
+  onDragStart: (e: React.DragEvent<HTMLElement>, item: Item) => void;
+  onDrop: (e: React.DragEvent<HTMLElement>, columnKey: ColumnKey) => void;
+  onDelete: (itemId: number) => void;
+  onEdit: (item: Item) => void;
 }
 
-export default function Column({ 
-  columnKey, 
-  title, 
-  items, 
-  onDragStart, 
-  onDrop, 
-  onDelete 
+export default function Column({
+  columnKey,
+  title,
+  items,
+  onDragStart,
+  onDrop,
+  onDelete,
+  onEdit,
 }: ColumnProps) {
-  const allowDrop = (e: React.DragEvent<HTMLElement>) => e.preventDefault()
+  const allowDrop = (e: React.DragEvent<HTMLElement>) => e.preventDefault();
 
   return (
     <div
@@ -35,18 +37,21 @@ export default function Column({
         onDrop={(e) => onDrop(e, columnKey)}
       >
         {items.length === 0 ? (
-          <div className="text-xs text-slate-400 py-6 text-center">Drag tasks here</div>
+          <div className="text-xs text-slate-400 py-6 text-center">
+            Drag tasks here
+          </div>
         ) : (
           items.map((item) => (
             <TaskCard
               key={item.id}
               item={item}
               onDelete={onDelete}
+              onEdit={onEdit}
               onDragStart={onDragStart}
             />
           ))
         )}
       </div>
     </div>
-  )
+  );
 }

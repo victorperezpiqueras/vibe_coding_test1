@@ -1,13 +1,19 @@
-import type { Item } from '../types'
-import Tag from './Tag'
+import type { Item } from "../types";
+import Tag from "./Tag";
 
 interface TaskCardProps {
-  item: Item
-  onDelete: (itemId: number) => void
-  onDragStart: (e: React.DragEvent<HTMLElement>, item: Item) => void
+  item: Item;
+  onDelete: (itemId: number) => void;
+  onEdit: (item: Item) => void;
+  onDragStart: (e: React.DragEvent<HTMLElement>, item: Item) => void;
 }
 
-export default function TaskCard({ item, onDelete, onDragStart }: TaskCardProps) {
+export default function TaskCard({
+  item,
+  onDelete,
+  onEdit,
+  onDragStart,
+}: TaskCardProps) {
   return (
     <article
       data-testid={`task-${item.id}`}
@@ -29,14 +35,23 @@ export default function TaskCard({ item, onDelete, onDragStart }: TaskCardProps)
             </div>
           )}
         </div>
-        <button
-          data-testid={`delete-task-${item.id}`}
-          onClick={() => onDelete(item.id)}
-          className="opacity-0 group-hover:opacity-100 rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300"
-        >
-          Delete
-        </button>
+        <div className="flex flex-col gap-1.5">
+          <button
+            data-testid={`edit-task-${item.id}`}
+            onClick={() => onEdit(item)}
+            className="opacity-0 group-hover:opacity-100 rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300"
+          >
+            Edit
+          </button>
+          <button
+            data-testid={`delete-task-${item.id}`}
+            onClick={() => onDelete(item.id)}
+            className="opacity-0 group-hover:opacity-100 rounded-md border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </article>
-  )
+  );
 }
