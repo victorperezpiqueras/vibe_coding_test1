@@ -1,42 +1,67 @@
-import { useState } from 'react'
-import type { Tag as TagType, TagCreateData } from '../types'
-import TagSelector from './TagSelector'
+import { useEffect, useState } from "react";
+import type { Tag as TagType, TagCreateData, Item } from "../types";
+import TagSelector from "./TagSelector";
 
 interface TaskFormProps {
-  availableTags: TagType[]
-  onSubmit: (data: { name: string; description: string; tag_ids: number[] }) => Promise<void>
-  onCancel: () => void
-  onCreateTag: (tagData: TagCreateData) => Promise<TagType>
+  availableTags: TagType[];
+  onSubmit: (data: {
+    name: string;
+    description: string;
+    tag_ids: number[];
+  }) => Promise<void>;
+  onCancel: () => void;
+  onCreateTag: (tagData: TagCreateData) => Promise<TagType>;
+  mode?: "create" | "edit";
+  initialData?: Item;
 }
 
-export default function TaskForm({ availableTags, onSubmit, onCancel, onCreateTag }: TaskFormProps) {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
+export default function TaskForm({
+  availableTags,
+  onSubmit,
+  onCancel,
+  onCreateTag,
+  mode = "create",
+  initialData,
+}: TaskFormProps) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
+
+  // Pre-fill form when editing
+  useEffect(() => {
+    if (mode === "edit" && initialData) {
+      setName(initialData.name);
+      setDescription(initialData.description || "");
+      setSelectedTagIds(initialData.tags?.map((tag) => tag.id) || []);
+    }
+  }, [mode, initialData]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!name.trim()) return
+    e.preventDefault();
+    if (!name.trim()) return;
 
-    await onSubmit({ name, description, tag_ids: selectedTagIds })
-    
+    await onSubmit({ name, description, tag_ids: selectedTagIds });
+
     // Reset form
-    setName('')
-    setDescription('')
-    setSelectedTagIds([])
-  }
+    setName("");
+    setDescription("");
+    setSelectedTagIds([]);
+  };
 
   const handleCancel = () => {
-    setName('')
-    setDescription('')
-    setSelectedTagIds([])
-    onCancel()
-  }
+    setName("");
+    setDescription("");
+    setSelectedTagIds([]);
+    onCancel();
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="task-name" className="block text-sm font-medium text-slate-700 mb-1">
+        <label
+          htmlFor="task-name"
+          className="block text-sm font-medium text-slate-700 mb-1"
+        >
           Task name
         </label>
         <input
@@ -51,7 +76,10 @@ export default function TaskForm({ availableTags, onSubmit, onCancel, onCreateTa
         />
       </div>
       <div>
-        <label htmlFor="task-description" className="block text-sm font-medium text-slate-700 mb-1">
+        <label
+          htmlFor="task-description"
+          className="block text-sm font-medium text-slate-700 mb-1"
+        >
           Description (optional)
         </label>
         <textarea
@@ -82,13 +110,15 @@ export default function TaskForm({ availableTags, onSubmit, onCancel, onCreateTa
           Cancel
         </button>
         <button
-          data-testid="create-task-button"
+          data-testid={
+            mode === "edit" ? "update-task-button" : "create-task-button"
+          }
           type="submit"
           className="rounded-md bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-500"
         >
-          Create Task
+          {mode === "edit" ? "Update Task" : "Create Task"}
         </button>
       </div>
     </form>
-  )
+  );
 }
