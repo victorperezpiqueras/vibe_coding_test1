@@ -4,6 +4,10 @@
 - `frontend/`: Contains the React frontend application, organized using a feature-based structure. Find the docs here: [frontend/README.md](/frontend/README.md).
 - `.github/`: Contains GitHub-specific configuration files, including workflows and instructions.
 
+## Available commands
+
+Project commands for installing, debugging, lint, format, test and more are defined in the [Makefile](../Makefile). Use `make help` to see all available commands.
+
 ## Development workflow
 
 1. Plan each task into clear steps.
